@@ -191,17 +191,6 @@ namespace UModbus
         /// Сырые данные из ответного пакета.
         /// </summary>
         public byte[]        Data;
-
-
-        /*public string[] AsStrings()
-        {
-            int length = 1;
-
-            for (int i = 0; i < Data.Length; i++)
-            {
-                if 
-            }
-        }*/
     }
 
     /// <summary>
@@ -501,7 +490,6 @@ namespace UModbus
         /// <summary>
         /// Стандартная modbus функция SF13 - подфункция функции FC43.
         /// </summary>
-        ///public const byte MB_READ_DEVICE_ID_SUB      = 0x0E;
         public const byte MB_MEI_TYPE_CAN_OPEN       = 0x0D;
         /// <summary>
         /// Стандартная modbus функция SF14 - подфункция функции FC43.
