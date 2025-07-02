@@ -5,7 +5,7 @@ UModbus - .NET library for working with devices via the Modbus protocol, as well
 ## UModbus.Client library
 
 Capabilities:
-* Modbus full implementation. All standard functions of the Modbus protocol are implemented, as well as the ability to execute user requests (functions limited by the device manufacturer).
+* Modbus full implementation. All standard functions of the Modbus protocol are implemented, as well as the ability to execute user requests (functions designed by the device manufacturer).
 * Support for all transport level options for Modbus: RTU, ASCII, TCP, UDP.
 * Keeping a log of data exchange with a remote device.
 
@@ -15,9 +15,9 @@ Capabilities:
 * Supported functions:
    * `FC01` - `READ_COIL_STATUS`        - reading one/several coils
    * `FC02` - `READ_DISCRETE_INPUTS`    - reading one/several inputs
-   * `FC03` - `READ_HOLDING_REGISTERS`  - read one/multiple holding registers
-   * `FC04` - `READ_INPUT_REGISTERS`    - read one/multiple input registers
-   * `FC05` - `WRITE_SINGLE_COIL`       - record value of one value coil
+   * `FC03` - `READ_HOLDING_REGISTERS`  - reading one/multiple holding registers
+   * `FC04` - `READ_INPUT_REGISTERS`    - reading one/multiple input registers
+   * `FC05` - `WRITE_SINGLE_COIL`       - writing value of one value coil
    * `FC16` - `WRITE_MULTIPLE_REGISTER` - writing values to multiple holding registers
    * `FCxx` - Device manufacturer-defined function with a code from the Modbus protocol user function range.
 * Support for all major data types:
