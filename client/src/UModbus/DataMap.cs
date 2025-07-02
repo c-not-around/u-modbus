@@ -105,8 +105,8 @@ namespace UModbus
 
         public string Description { get; set; }
 
-		[JsonIgnore]
-		public bool Enable { get; set; }
+        [JsonIgnore]
+        public bool Enable { get; set; }
         #endregion
 
         #region Methods
@@ -442,8 +442,8 @@ namespace UModbus
             legend += "*/\r\n";
 
             string saved = JsonConvert.SerializeObject(map, Formatting.Indented);
-			saved = saved.Replace("  ", "\t");
-			File.WriteAllText(file, legend + saved);
+            saved = saved.Replace("  ", "\t");
+            File.WriteAllText(file, legend + saved);
         }
         #endregion
     }

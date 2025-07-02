@@ -154,12 +154,12 @@ namespace UModbus
             if (mode < Mode.TCP)
             {
                 ModbusSerialClient mbsc = Client as ModbusSerialClient;
-				StatusPhysical.Text     = $"{mbsc.Port}:{mbsc.Baudrate}:8{mbsc.Parity.ToString()[0]}{(int)mbsc.StopBits}";
+                StatusPhysical.Text     = $"{mbsc.Port}:{mbsc.Baudrate}:8{mbsc.Parity.ToString()[0]}{(int)mbsc.StopBits}";
             }
             else
             {
                 ModbusIpClient mbip = Client as ModbusIpClient;
-				StatusPhysical.Text = $"{mbip.IpAddress}:{mbip.Port}";
+                StatusPhysical.Text = $"{mbip.IpAddress}:{mbip.Port}";
             }
 
             StatusConnection.Text = Connected ? "Connected" : "Disconnected";
@@ -174,24 +174,24 @@ namespace UModbus
             DataViewEnableAll.Enabled  = sel < Map.Count;
             DataViewDisableAll.Enabled = sel > 0;
         }
-		#endregion
+        #endregion
 
-		#region Routines
-		private void DataViewSetEnableAll(bool enable)
-		{
-			for (int row = 0; row < Map.Count; row++)
-			{
-				Map[row].Enable = enable;
-				DataGridViewCheckBoxCell EnableBox = DataMapView[ENABLE, row] as DataGridViewCheckBoxCell;
-				EnableBox.Value = enable;
-			}
+        #region Routines
+        private void DataViewSetEnableAll(bool enable)
+        {
+            for (int row = 0; row < Map.Count; row++)
+            {
+                Map[row].Enable = enable;
+                DataGridViewCheckBoxCell EnableBox = DataMapView[ENABLE, row] as DataGridViewCheckBoxCell;
+                EnableBox.Value = enable;
+            }
 
-			ManageSelectedRows();
-		}
-		#endregion
+            ManageSelectedRows();
+        }
+        #endregion
 
-		#region Map<->Grid
-		private void DataMapRowUpdate(int row)
+        #region Map<->Grid
+        private void DataMapRowUpdate(int row)
         {
             if (row >= DataMapView.RowCount)
             {
@@ -452,10 +452,10 @@ namespace UModbus
                             StatusReqError.Text  = $"Errors: {ErrorCount}/{ReadCount}";
                         });
 
-						if (RequestGap > 0)
-						{
-							Thread.Sleep(RequestGap);
-						}
+                        if (RequestGap > 0)
+                        {
+                            Thread.Sleep(RequestGap);
+                        }
 
                         if (AccessAborting)
                         {
@@ -510,12 +510,12 @@ namespace UModbus
                         StatusReqError.Text  = $"Errors: {ErrorCount}/{WriteCount}";
                     });
 
-					if (RequestGap > 0)
-					{
-						Thread.Sleep(RequestGap);
-					}
+                    if (RequestGap > 0)
+                    {
+                        Thread.Sleep(RequestGap);
+                    }
 
-					if (AccessAborting)
+                    if (AccessAborting)
                     {
                         break;
                     }
@@ -871,25 +871,25 @@ namespace UModbus
         }
         
         private void DataViewEnableAllClick(object sender, EventArgs e) => DataViewSetEnableAll(true);
-		
+        
         private void DataViewDisableAllClick(object sender, EventArgs e) => DataViewSetEnableAll(false);
 
-		private void DataViewSaveClick(object sender, EventArgs e)
+        private void DataViewSaveClick(object sender, EventArgs e)
         {
             SaveFileDialog dialog = new SaveFileDialog();
             dialog.Filter = "Comma-separated file (*.csv)|*.csv";
 
             if (dialog.ShowDialog() == DialogResult.OK)
             {
-				using (var writer = File.AppendText(dialog.FileName))
-				{
-					for (int row = 0; row < Map.Count; row++)
-					{
-						writer.WriteLine($"{Map[row].Type};{Map[row].Format};{Map[row].Address:X4};{Map[row].ValueToString()}\r\n");
-					}
+                using (var writer = File.AppendText(dialog.FileName))
+                {
+                    for (int row = 0; row < Map.Count; row++)
+                    {
+                        writer.WriteLine($"{Map[row].Type};{Map[row].Format};{Map[row].Address:X4};{Map[row].ValueToString()}\r\n");
+                    }
 
-					writer.Dispose();
-				}
+                    writer.Dispose();
+                }
             }
         }
         #endregion

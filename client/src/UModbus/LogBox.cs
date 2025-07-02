@@ -21,28 +21,28 @@ namespace UModbus
             _LogMenuCopy.Image  = Properties.Resources.copy;
             _LogMenuCopy.Click += (sender, e) => _Log.Copy();
 
-			var _LogMenuClear   = new ToolStripMenuItem();
-			_LogMenuClear.Text  = "Clear";
-			_LogMenuClear.Image = Properties.Resources.clear;
-			_LogMenuClear.Click += (sender, e) => _Log.Clear();
+            var _LogMenuClear   = new ToolStripMenuItem();
+            _LogMenuClear.Text  = "Clear";
+            _LogMenuClear.Image = Properties.Resources.clear;
+            _LogMenuClear.Click += (sender, e) => _Log.Clear();
 
-			var _LogMenuSave    = new ToolStripMenuItem();
+            var _LogMenuSave    = new ToolStripMenuItem();
             _LogMenuSave.Text   = "Save";
             _LogMenuSave.Image  = Properties.Resources.save;
-			_LogMenuSave.Click += (sender, e) =>
-			{
-				SaveFileDialog dialog = new SaveFileDialog();
-				dialog.Filter = "Plain text file (*.txt)|*.txt|Log file (*.log)|*.log";
-				dialog.FilterIndex = 1;
-				dialog.FileName = DateTime.Now.ToString("yyyyMMdd-HHmmss.lo\\g");
+            _LogMenuSave.Click += (sender, e) =>
+            {
+                SaveFileDialog dialog = new SaveFileDialog();
+                dialog.Filter = "Plain text file (*.txt)|*.txt|Log file (*.log)|*.log";
+                dialog.FilterIndex = 1;
+                dialog.FileName = DateTime.Now.ToString("yyyyMMdd-HHmmss.lo\\g");
 
-				if (dialog.ShowDialog() == DialogResult.OK)
-				{
-					File.WriteAllText(dialog.FileName, _Log.Text);
-				}
-			};
+                if (dialog.ShowDialog() == DialogResult.OK)
+                {
+                    File.WriteAllText(dialog.FileName, _Log.Text);
+                }
+            };
 
-			_LogMenu = new ContextMenuStrip();
+            _LogMenu = new ContextMenuStrip();
             _LogMenu.Items.AddRange(new ToolStripItem[] 
             {
                 _LogMenuCopy,
@@ -80,7 +80,7 @@ namespace UModbus
         #region Public
         public new Size Size
         {
-			get => base.Size;
+            get => base.Size;
             set
             {
                 _Log.Size = new Size(value.Width-2, value.Height-2);

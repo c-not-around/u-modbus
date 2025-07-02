@@ -45,12 +45,12 @@ namespace UModbus
 
         #region Utils
         private string DataToLog(byte[] data) => Client.SlaveAddress.ToString("X2") + " " +
-				                                 function.ToString("X2") + " " +
-				                                 LogBox.BytesToHexString(data);
-		#endregion
+                                                 function.ToString("X2") + " " +
+                                                 LogBox.BytesToHexString(data);
+        #endregion
 
-		#region Tasks
-		private void RequestTask()
+        #region Tasks
+        private void RequestTask()
         {
             WaitResponse = true;
 
