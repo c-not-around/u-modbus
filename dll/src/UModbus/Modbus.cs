@@ -401,6 +401,8 @@ namespace UModbus.Client
     #region Base
     /// <summary>
     /// Базовый класс Modbus-клиента.
+	/// Реализует взаимодействие с подчиненными устройствами
+	/// по протоколу Modbus.
     /// </summary>
     public abstract class ModbusClient
     {
@@ -647,21 +649,29 @@ namespace UModbus.Client
         /// <summary>
         /// Дописывет HEX-представление массива байт в файл LogFileName.
         /// </summary>
-        /// <param name="prefix">метка пакета.</param>
-        /// <param name="length">количество байт, которые следует записать в файл.</param>
-        /// <param name="data">массив записываемых байт.</param>
+        /// <param name="prefix">Метка пакета.</param>
+        /// <param name="length">Количество байт, которые следует записать в файл.</param>
+        /// <param name="data">Массив записываемых байт.</param>
         protected void SaveToLogFile(string prefix, int length, params byte[] data)
         {
-            if (LogFileName != null && LogFileName != "")
+            if (!String.IsNullOrEmpty(LogFileName))
             {
                 string line = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + $" {prefix}:";
-
                 for (int i = 0; i < length; i++)
                 {
                     line += $" {data[i]:X2}";
                 }
+				line += "\r\n";
 
-                File.AppendAllText(LogFileName, line + "\r\n");
+				try
+				{
+					File.AppendAllText(LogFileName, line);
+				}
+                catch (Exception e)
+				{
+					string error = $"write to '{LogFileName}' error: {e.Message}. Log data:\r\n";
+					File.AppendAllText(LogFileName, error+line);
+				}
             }
         }
 
@@ -674,6 +684,13 @@ namespace UModbus.Client
         /// <returns>Protocol Data Unit.</returns>
         protected abstract TransferResponse TransferPDU(params byte[] data);
 
+		/// <summary>
+		/// Проверка ответа на корректность.
+		/// </summary>
+		/// <param name="response">Ответ, полученный от подчиненного Modbus устройства, который необходимо проверить.</param>
+		/// <param name="function">Функциональный код, использованный в запросе.</param>
+		/// <param name="CheckLength">Функция проверки коррекности длины ответа для данного типа запроса.</param>
+		/// <returns></returns>
         private RequestStatus CheckResponse(TransferResponse response, byte function, Func<byte[],bool> CheckLength)
         {
             if (response.Status == RequestStatus.Valid)
@@ -707,13 +724,20 @@ namespace UModbus.Client
             return response.Status;
         }
 
-        private BitResponse ReadBits(byte function, ushort address, ushort count)
+		/// <summary>
+		/// Обобщенная функция чтения одного/нескольких флагов (Coils/DiscreteInputs).
+		/// </summary>
+		/// <param name="function">Код функции Modbus FC01/FC02.</param>
+		/// <param name="address">Адрес первого флага.</param>
+		/// <param name="count">Количество считываемых флагов.</param>
+		/// <returns>Массив значений флагов.</returns>
+		private BitResponse ReadBits(byte function, ushort address, ushort count)
         {
             BitResponse result = new BitResponse();
 
             TransferResponse response = TransferPDU
             (
-                SlaveAddress,          // 0: slave address
+                SlaveAddress,           // 0: slave address
                 function,               // 1: function read 
                 (byte)(address >> 8),   // 2: start register (MSB)
                 (byte)(address & 0xFF), // 3: start register (LSB)
@@ -746,13 +770,20 @@ namespace UModbus.Client
             return result;
         }
 
-        private WordResponse ReadWords(byte function, ushort address, ushort count)
+		/// <summary>
+		/// Обобщенная функция чтения одного/нескольких регистров (HoldingRegisters/InputRegisters).
+		/// </summary>
+		/// <param name="function">Код функции Modbus FC03/FC04.</param>
+		/// <param name="address">Адрес первого регистра.</param>
+		/// <param name="count">Количество считываемых регистров.</param>
+		/// <returns>Массив значений регистров.</returns>
+		private WordResponse ReadWords(byte function, ushort address, ushort count)
         {
             WordResponse result = new WordResponse();
 
             TransferResponse response = TransferPDU
             (
-                SlaveAddress,          // 0: slave address
+                SlaveAddress,           // 0: slave address
                 function,               // 1: function read 
                 (byte)(address >> 8),   // 2: start register (MSB)
                 (byte)(address & 0xFF), // 3: start register (LSB)
@@ -783,13 +814,18 @@ namespace UModbus.Client
             return result;
         }
 
-        private IdResponse ReadDeviceIdentification(byte IdCode)
+		/// <summary>
+		/// Чтение информации об устройстве.
+		/// </summary>
+		/// <param name="IdCode">Код подфункции Modbus SFC01/SFC02 функции FC43.</param>
+		/// <returns>Массив строк описания.</returns>
+		private IdResponse ReadDeviceIdentification(byte IdCode)
         {
             IdResponse result = new IdResponse();
 
             TransferResponse response = TransferPDU
             (
-                SlaveAddress,         // 0: slave address
+                SlaveAddress,          // 0: slave address
                 MB_READ_DEVICE_ID,     // 1: get info function code
                 MB_MEI_TYPE_DEVICE_ID, // 2: get info sub-function code
                 IdCode,                // 3: read device id code
@@ -854,7 +890,7 @@ namespace UModbus.Client
         }
 
         /// <summary>
-        /// Задает/возвращает modbus-адрес устройства в сети.
+        /// Задает/возвращает Modbus-адрес устройства в сети.
         /// </summary>
         public byte SlaveAddress { get; set; }
 
@@ -892,41 +928,41 @@ namespace UModbus.Client
         /// <summary>
         /// FC01 - чтение одного/нескольких флагов (ciols).
         /// </summary>
-        /// <param name="address">адрес первого флага.</param>
-        /// <param name="count">количество считываемых флагов.</param>
-        /// <returns>массив значений флагов.</returns>
+        /// <param name="address">Адрес первого флага.</param>
+        /// <param name="count">Количество считываемых флагов.</param>
+        /// <returns>Массив значений флагов.</returns>
         public BitResponse ReadCoils(ushort address, ushort count) => ReadBits(MB_READ_COIL_STATUS, address, count);
 
         /// <summary>
         /// FC02 - чтение одного/нескольких флагов (discrete inputs).
         /// </summary>
-        /// <param name="address">адрес первого флага.</param>
-        /// <param name="count">количество считываемых флагов.</param>
-        /// <returns>массив значений флагов.</returns>
+        /// <param name="address">Адрес первого флага.</param>
+        /// <param name="count">Количество считываемых флагов.</param>
+        /// <returns>Массив значений флагов.</returns>
         public BitResponse ReadDiscreteInputs(ushort address, ushort count) => ReadBits(MB_READ_DISCRETE_INPUTS, address, count);
 
         /// <summary>
         /// FC03 - чтение одного/нескольких регистров хранения.
         /// </summary>
-        /// <param name="address">адрес первого регистра.</param>
-        /// <param name="count">количество считываемых регистров.</param>
-        /// <returns>массив значений регистров.</returns>
+        /// <param name="address">Адрес первого регистра.</param>
+        /// <param name="count">Количество считываемых регистров.</param>
+        /// <returns>Массив значений регистров.</returns>
         public WordResponse ReadHoldingRegisters(ushort address, ushort count) => ReadWords(MB_READ_HOLDING_REGISTERS, address, count);
 
         /// <summary>
         /// FC04 - чтение одного/нескольких входных регистров.
         /// </summary>
-        /// <param name="address">адрес первого регистра.</param>
-        /// <param name="count">количество считываемых регистров.</param>
-        /// <returns>массив значений регистров.</returns>
+        /// <param name="address">Адрес первого регистра.</param>
+        /// <param name="count">Количество считываемых регистров.</param>
+        /// <returns>Массив значений регистров.</returns>
         public WordResponse ReadInputRegisters(ushort address, ushort count) => ReadWords(MB_READ_INPUT_REGISTERS, address, count);
 
         /// <summary>
         /// FC05 - запись значения одного флага (coil).
         /// </summary>
-        /// <param name="address">адрес записываемого флага.</param>
-        /// <param name="coil">значение записываемого флага.</param>
-        /// <returns>количество записаных флагов.</returns>
+        /// <param name="address">Адрес записываемого флага.</param>
+        /// <param name="coil">Значение записываемого флага.</param>
+        /// <returns>Количество записаных флагов.</returns>
         public WriteResponse WriteSingleCoil(ushort address, bool coil)
         {
             WriteResponse result = new WriteResponse();
@@ -968,9 +1004,9 @@ namespace UModbus.Client
         /// <summary>
         /// FC06 - запись значения одного регистра хранения.
         /// </summary>
-        /// <param name="address">адрес записываемого регистра.</param>
-        /// <param name="register">значение записываемого регистра.</param>
-        /// <returns>количество записаных регистров.</returns>
+        /// <param name="address">Адрес записываемого регистра.</param>
+        /// <param name="register">Значение записываемого регистра.</param>
+        /// <returns>Количество записаных регистров.</returns>
         public WriteResponse WriteSingleRegister(ushort address, ushort register)
         {
             WriteResponse result = new WriteResponse();
@@ -1012,7 +1048,7 @@ namespace UModbus.Client
         /// <summary>
         /// FC07 - чтение кода ошибки.
         /// </summary>
-        /// <returns>код ошибки от 0 до 255.</returns>
+        /// <returns>Код ошибки от 0 до 255.</returns>
         public ExceptionResponse ReadExceptionStatus()
         {
             ExceptionResponse result = new ExceptionResponse();
@@ -1039,9 +1075,9 @@ namespace UModbus.Client
         /// <summary>
         /// FC08 - диагностика починенного устройства.
         /// </summary>
-        /// <param name="SubFunction">подфункция диагностики.</param>
-        /// <param name="data">данные (в зависимости от подфункции).</param>
-        /// <returns>данные (в зависимости от подфункции).</returns>
+        /// <param name="SubFunction">Подфункция диагностики.</param>
+        /// <param name="data">Данные (в зависимости от подфункции).</param>
+        /// <returns>Данные (в зависимости от подфункции).</returns>
         public ByteResponse Diagnostics(ushort SubFunction, params byte[] data)
         {
             ByteResponse result = new ByteResponse();
@@ -1081,7 +1117,7 @@ namespace UModbus.Client
         /// <summary>
         /// FC11 - чтение слова состояния и количества событий починенного устройства.
         /// </summary>
-        /// <returns>слово состояния и количество событий.</returns>
+        /// <returns>Слово состояния и количество событий.</returns>
         public StatusResponse GetCommEventCounter()
         {
             StatusResponse result = new StatusResponse();
@@ -1112,7 +1148,7 @@ namespace UModbus.Client
         /// <summary>
         /// FC12 - чтение записей журнала событий починенного устройства.
         /// </summary>
-        /// <returns>до 64-х записей.</returns>
+        /// <returns>Массив до 64-х записей.</returns>
         public EventLogResponse GetCommEventLog()
         {
             EventLogResponse result = new EventLogResponse();
@@ -1151,9 +1187,9 @@ namespace UModbus.Client
         /// <summary>
         /// FC15 - запись нескольких значений флагов (coils).
         /// </summary>
-        /// <param name="address">адрес первого записываемого флага.</param>
-        /// <param name="coils">значения записываемых флагов.</param>
-        /// <returns>количество записаных флагов.</returns>
+        /// <param name="address">Адрес первого записываемого флага.</param>
+        /// <param name="coils">Значения записываемых флагов.</param>
+        /// <returns>Количество записаных флагов.</returns>
         public WriteResponse WriteMultipleCoils(ushort address, params bool[] coils)
         {
             WriteResponse result = new WriteResponse();
@@ -1212,9 +1248,9 @@ namespace UModbus.Client
         /// <summary>
         /// FC16 - запись нескольких значений регистров хранения.
         /// </summary>
-        /// <param name="address">адрес первого записываемого регистра.</param>
-        /// <param name="registers">значения записываемых регистров.</param>
-        /// <returns>количество записаных регистров.</returns>
+        /// <param name="address">Адрес первого записываемого регистра.</param>
+        /// <param name="registers">Значения записываемых регистров.</param>
+        /// <returns>Количество записаных регистров.</returns>
         public WriteResponse WriteMultipleRegisters(ushort address, params ushort[] registers)
         {
             WriteResponse result = new WriteResponse();
@@ -1265,7 +1301,7 @@ namespace UModbus.Client
         /// <summary>
         /// FC17 - чтение описания типа, текущего состояния и другой информации об устройстве.
         /// </summary>
-        /// <returns>данные, структура которых специфична для конкретного устройства.</returns>
+        /// <returns>Данные, структура которых специфична для конкретного устройства.</returns>
         public ByteResponse ReportSlaveId()
         {
             ByteResponse result = new ByteResponse();
@@ -1294,8 +1330,8 @@ namespace UModbus.Client
         /// <summary>
         /// FC20 - чтение массива записей из файла.
         /// </summary>
-        /// <param name="SubRequests">массив под-запросов(файл,запись и ее длина).</param>
-        /// <returns>значения рочитанных записей.</returns>
+        /// <param name="SubRequests">Массив под-запросов(файл,запись и ее длина).</param>
+        /// <returns>Значения прочитанных записей.</returns>
         public FileRecordResponse ReadFileRecord(params FileRecordSubReq[] SubRequests)
         {
             FileRecordResponse result = new FileRecordResponse();
@@ -1375,8 +1411,8 @@ namespace UModbus.Client
         /// <summary>
         /// FC21 - запись массива записей в файл.
         /// </summary>
-        /// <param name="records">массив записей.</param>
-        /// <returns>количество записанных записей.</returns>
+        /// <param name="records">Массив записей.</param>
+        /// <returns>Количество записанных записей.</returns>
         public WriteResponse WriteFileRecord(params FileRecord[] records)
         {
             WriteResponse result = new WriteResponse();
@@ -1455,10 +1491,10 @@ namespace UModbus.Client
         /// FC22 - модификация значения регистра хранения.
         /// reg = (reg &amp; and) | (or &amp; ~and).
         /// </summary>
-        /// <param name="address">адрес модифицируемого регистра.</param>
-        /// <param name="and">маска "И".</param>
-        /// <param name="or">маска "ИЛИ".</param>
-        /// <returns>количество модифицированных регистров (1/0).</returns>
+        /// <param name="address">Адрес модифицируемого регистра.</param>
+        /// <param name="and">Маска "И".</param>
+        /// <param name="or">Маска "ИЛИ".</param>
+        /// <returns>Количество модифицированных регистров (1/0).</returns>
         public WriteResponse MaskWriteRegister(ushort address, ushort and, ushort or)
         {
             WriteResponse result = new WriteResponse();
@@ -1505,11 +1541,11 @@ namespace UModbus.Client
         /// <summary>
         /// FC23 - комбинация чтения и записи нескольких регистров в одной транзакции.
         /// </summary>
-        /// <param name="ReadAddress">адрес первого считываемого регистра.</param>
-        /// <param name="ReadCount">количество считываемых регистров.</param>
-        /// <param name="WriteAddress">адрес первого записываемого регистра.</param>
-        /// <param name="WriteData">значения записываемых регистров.</param>
-        /// <returns>массив считанных значений регистров.</returns>
+        /// <param name="ReadAddress">Адрес первого считываемого регистра.</param>
+        /// <param name="ReadCount">Количество считываемых регистров.</param>
+        /// <param name="WriteAddress">Адрес первого записываемого регистра.</param>
+        /// <param name="WriteData">Значения записываемых регистров.</param>
+        /// <returns>Массив считанных значений регистров.</returns>
         public WordResponse ReadWriteMultipleRegisters(ushort ReadAddress, ushort ReadCount, ushort WriteAddress, params ushort[] WriteData)
         {
             WordResponse result = new WordResponse();
@@ -1564,8 +1600,8 @@ namespace UModbus.Client
         /// <summary>
         /// FC24 - чтение содержимого очереди регистров в порядке очереди (FIFO).
         /// </summary>
-        /// <param name="pointer">счетчик очереди.</param>
-        /// <returns>данные в очереди (до 32 регистров).</returns>
+        /// <param name="pointer">Указатель на запись в очереди.</param>
+        /// <returns>Данные в очереди (до 32 регистров).</returns>
         public WordResponse ReadFifoQueue(ushort pointer)
         {
             WordResponse result = new WordResponse();
@@ -1615,24 +1651,24 @@ namespace UModbus.Client
         }
 
         /// <summary>
-        /// FC43/01 - чтение базовой информации об устройстве.
+        /// FC43/01 - Чтение базовой информации об устройстве.
         /// </summary>
-        /// <returns>массив строк описания.</returns>
+        /// <returns>Массив строк описания.</returns>
         public IdResponse ReadDeviceInfoBasic() => ReadDeviceIdentification(MB_READ_ID_CODE_BASIC);
 
         /// <summary>
-        /// FC43/02 - чтение полной информации об устройстве.
+        /// FC43/02 - Чтение полной информации об устройстве.
         /// </summary>
-        /// <returns>массив строк описания.</returns>
+        /// <returns>Массив строк описания.</returns>
         public IdResponse ReadDeviceInfoComplete() => ReadDeviceIdentification(MB_READ_ID_CODE_REGULAR);
 
-        /// <summary>
-        /// Пользовательский запрос с функцией func.
-        /// </summary>
-        /// <param name="function">код функции пользовательского запроса.</param>
-        /// <param name="parameters">параметры, определенные структурой пользовательской функции.</param>
-        /// <returns>блок "сырых" данных.</returns>
-        public ByteResponse UserRequest(byte function, params byte[] parameters)
+		/// <summary>
+		/// Пользовательский запрос с функцией function.
+		/// </summary>
+		/// <param name="function">Код функции пользовательского запроса.</param>
+		/// <param name="parameters">Параметры, определенные структурой пользовательской функции.</param>
+		/// <returns>Ответный блок "сырых" данных.</returns>
+		public ByteResponse UserRequest(byte function, params byte[] parameters)
         {
             ByteResponse result = new ByteResponse();
 
@@ -1659,22 +1695,24 @@ namespace UModbus.Client
         #endregion
     }
 
-    /// <summary>
-    /// Базовый класс Modbus-клиента. Через последовательный порт.
-    /// </summary>
-    public abstract class ModbusSerialClient : ModbusClient
+	/// <summary>
+	/// Базовый класс Modbus-клиента. 
+	/// Реализует взаимодействие с подчиненными устройствами
+	/// по протоколу Modbus через последовательный порт (RTU/ASCII).
+	/// </summary>
+	public abstract class ModbusSerialClient : ModbusClient
     {
 		#region Fields
 		/// <summary>
 		/// Последовательный порт, через который устанавливается связь с подчиненным Modbus-устройством.
 		/// </summary>
 		protected SerialPort _Uart;
-        /// <summary>
-        /// Корректное значение контрольной суммы для заданного протокола.
-        /// </summary>
-        protected ushort     _CorrectCrc;
 		/// <summary>
-		/// Длина контрольной суммы для заданного протокола в байтах.
+		/// Корректное значение контрольной суммы для конкретного протокола (RTU/ASCII).
+		/// </summary>
+		protected ushort     _CorrectCrc;
+		/// <summary>
+		/// Длина контрольной суммы в байтах для конкретного протокола (RTU/ASCII).
 		/// </summary>
 		protected int        _CrcLength;
         #endregion
@@ -1683,7 +1721,7 @@ namespace UModbus.Client
         /// <summary>
         /// Вычисляет контрольную сумму пакета.
         /// </summary>
-        /// <param name="data">пакт данных.</param>
+        /// <param name="data">Пакет данных.</param>
         /// <returns>16битная контрольная сумма.</returns>
         protected abstract ushort CheckSum(byte[] data);
 
@@ -1699,8 +1737,8 @@ namespace UModbus.Client
         /// <summary>
         /// Реализация приема/передачи пакетов транспортного уровня.
         /// </summary>
-        /// <param name="data">отправляемый пакет.</param>
-        /// <returns>возвращаемый ответ.</returns>
+        /// <param name="data">Отправляемый пакет.</param>
+        /// <returns>Возвращаемый ответ.</returns>
         protected override TransferResponse TransferPDU(params byte[] data)
         {
             TransferResponse result = new TransferResponse();
@@ -1800,22 +1838,12 @@ namespace UModbus.Client
 		/// <summary>
 		/// Возвращает статус соединения по последовательному порту.
 		/// </summary>
-		public override bool IsConnected
-        {
-            get
-            {
-                if (_Uart == null)
-                {
-                    return false;
-                }
-                return _Uart.IsOpen;
-            }
-        }
+		public override bool IsConnected => _Uart != null && _Uart.IsOpen;
 
         /// <summary>
         /// Устанавливает соединение по последовательному порту.
         /// </summary>
-        /// <returns>статус соединения по последовательному порту.</returns>
+        /// <returns>Cтатус соединения по последовательному порту.</returns>
         public override bool Connect()
         {
             _Uart.PortName = Port;
@@ -1849,18 +1877,20 @@ namespace UModbus.Client
         #endregion
     }
 
-    /// <summary>
-    /// Базовый класс Modbus-клиента. Через Ethernet/IP.
-    /// </summary>
-    public abstract class ModbusIpClient : ModbusClient
+	/// <summary>
+	/// Базовый класс Modbus-клиента.
+	/// Реализует взаимодействие с подчиненными устройствами
+	/// по протоколу Modbus через IP (TCP/UDP).
+	/// </summary>
+	public abstract class ModbusIpClient : ModbusClient
     {
 		#region Consts
 		/// <summary>
-		/// Длина заголовка Modbus пакета внутри TCP/UDP пакета
+		/// Длина заголовка Modbus пакета внутри TCP/UDP пакета.
 		/// </summary>
 		private const byte IP_HEADER_LENGTH = 6;
 		/// <summary>
-		/// Идентификатор протокола Modbus поверх TCP/UDP
+		/// Идентификатор протокола Modbus поверх TCP/UDP.
 		/// </summary>
 		private const byte IP_PROTOCOL      = 0x0000;
         #endregion
@@ -1886,7 +1916,7 @@ namespace UModbus.Client
         /// Реализация приема/передачи пакетов транспортного уровня.
         /// </summary>
         /// <param name="data">отправляемый пакет.</param>
-        /// <returns>возвращаемый ответ.</returns>
+        /// <returns>Возвращаемый ответ.</returns>
         protected override TransferResponse TransferPDU(params byte[] data)
         {
             TransferResponse result = new TransferResponse();
@@ -2023,7 +2053,7 @@ namespace UModbus.Client
         /// <summary>
         /// Реализация контрольной вычисления суммы CRC16.
         /// </summary>
-        /// <param name="data">пакет данных.</param>
+        /// <param name="data">Пакет данных.</param>
         /// <returns>16-битная контрольная сумма.</returns>
         protected override ushort CheckSum(byte[] data)
         {
@@ -2162,7 +2192,7 @@ namespace UModbus.Client
 		/// Преобразование ASCII изображения терады закодированного байта в значение тетрады.
 		/// </summary>
 		/// <param name="tetrade">Код ASCII символа, тетрады закодированного байта.</param>
-		/// <returns>значение тетрады, соответствующее входным данным.</returns>
+		/// <returns>Значение тетрады, соответствующее входным данным.</returns>
 		private int TetradeDecode(byte tetrade)
         {
             if (0x2F < tetrade && tetrade < 0x3A) // числовые значения 0..9
@@ -2183,7 +2213,7 @@ namespace UModbus.Client
         /// Реализация контрольной вычисления суммы CRC8.
         /// </summary>
         /// <param name="data">пакет данных.</param>
-        /// <returns>8битная контрольная сумма.</returns>
+        /// <returns>8битная контрольная сумма, каждая тетрада которой закодирована ASCII кодами.</returns>
         protected override ushort CheckSum(byte[] data)
         {
             ushort result = 0;
@@ -2388,25 +2418,15 @@ namespace UModbus.Client
 
         }
 
-        /// <summary>
-        /// Возвращает статус TCP соединения.
-        /// </summary>
-        public override bool IsConnected
-        {
-            get
-            {
-                if (_TcpClient == null)
-                {
-                    return false;
-                }
-                return _TcpClient.Connected;
-            }
-        }
+		/// <summary>
+		/// Возвращает статус TCP соединения.
+		/// </summary>
+		public override bool IsConnected => _TcpClient != null && _TcpClient.Connected;
 
         /// <summary>
         /// Устанавливает TCP соединение с устройством по указанному IP адресу.
         /// </summary>
-        /// <returns>статус соединения.</returns>
+        /// <returns>Статус соединения.</returns>
         public override bool Connect()
         {
             _TcpClient = new TcpClient();
@@ -2457,13 +2477,6 @@ namespace UModbus.Client
     /// </summary>
     public class ModbusUdpClient : ModbusIpClient
     {
-		#region Consts
-		/// <summary>
-		/// Размер входного буффера для приема ответа от подчиненного Modbus устройства.
-		/// </summary>
-		private const int RESP_BUFFER_SIZE = 1024;
-        #endregion
-
         #region Fields
         private UdpClient  _UdpClient;
         private IPEndPoint _SlaveEndPoint;
@@ -2524,18 +2537,12 @@ namespace UModbus.Client
         /// <summary>
         /// Возвращает статус UDP соединения.
         /// </summary>
-        public override bool IsConnected
-        {
-            get
-            {
-                return _UdpClient != null;
-            }
-        }
+        public override bool IsConnected => _UdpClient != null;
 
         /// <summary>
         /// Устанавливает UDP соединение с устройством по указанному IP адресу.
         /// </summary>
-        /// <returns>статус соединения.</returns>
+        /// <returns>Cтатус соединения.</returns>
         public override bool Connect()
         {
             try
