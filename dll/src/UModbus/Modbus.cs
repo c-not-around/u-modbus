@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.IO.Ports;
 using System.Net;
@@ -7,7 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 
 
-namespace UModbus
+namespace UModbus.Client
 {
     #region Types
     /// <summary>
@@ -21,39 +21,39 @@ namespace UModbus
         Valid                  = 0x00,
 
         /// <summary>
-        /// Стандарный код ошибки протокла modbus. Функция запроса не поддерживается устройством.
+        /// Стандарный код ошибки протокола modbus. Функция запроса не поддерживается устройством.
         /// </summary>
         IllegalFunction        = 0x01,
         /// <summary>
-        /// Стандарный код ошибки протокла modbus. Некорректный для устройства начальный адрес флага/регистра.
+        /// Стандарный код ошибки протокола modbus. Некорректный для устройства начальный адрес флага/регистра.
         /// </summary>
         IllegalDataAddress     = 0x02,
         /// <summary>
-        /// Стандарный код ошибки протокла modbus. Значение, содержащееся в поле данных запроса, не является допустимым.
+        /// Стандарный код ошибки протокола modbus. Значение, содержащееся в поле данных запроса, не является допустимым.
         /// </summary>
         IllegalDataValue       = 0x03,
         /// <summary>
-        /// Стандарный код ошибки протокла modbus. Произошла неисправимая ошибка, когда slave пытался выполнить запрошенное действие.
+        /// Стандарный код ошибки протокола modbus. Произошла неисправимая ошибка, когда slave пытался выполнить запрошенное действие.
         /// </summary>
         SlaveDeviceFailure     = 0x04,
         /// <summary>
-        /// Стандарный код ошибки протокла modbus. Slave принял запрос и обрабатывает его, но ответные данные будут готовы через продолжительный период времени.
+        /// Стандарный код ошибки протокола modbus. Slave принял запрос и обрабатывает его, но ответные данные будут готовы через продолжительный период времени.
         /// </summary>
         Acknowledge            = 0x05,
         /// <summary>
-        /// Стандарный код ошибки протокла modbus. Slave занимается обработкой длительной команды. Клиент должен повторно передать сообщение позже.
+        /// Стандарный код ошибки протокола modbus. Slave занимается обработкой длительной команды. Клиент должен повторно передать сообщение позже.
         /// </summary>
         SlaveDeviceBusy        = 0x06,
         /// <summary>
-        /// Стандарный код ошибки протокла modbus. Slave попытался прочитать запись из файла, но обнаружил ошибку четности в памяти.
+        /// Стандарный код ошибки протокола modbus. Slave попытался прочитать запись из файла, но обнаружил ошибку четности в памяти.
         /// </summary>
         MemoryParityError      = 0x08,
         /// <summary>
-        /// Стандарный код ошибки протокла modbus. Обычно означает, что шлюз настроен неправильно или перегружен.
+        /// Стандарный код ошибки протокола modbus. Обычно означает, что шлюз настроен неправильно или перегружен.
         /// </summary>
         GateWayPathUnavailable = 0x0A,
         /// <summary>
-        /// Стандарный код ошибки протокла modbus. Указывает на то, что ответ не был получен от Slave устройство. 
+        /// Стандарный код ошибки протокола modbus. Указывает на то, что ответ не был получен от Slave устройство. 
         /// </summary>
         GateWayTargetFailed    = 0x0B,
 
@@ -221,41 +221,41 @@ namespace UModbus
         /// <returns></returns>
         public override string ToString()
         {
-            string result = String.Format("Product ID       : {0}\r\nConformity Level : {1}\r\n", ProductId, ConformityLevel);
+            string result = $"Product ID       : {ProductId}\r\nConformity Level : {ConformityLevel}\r\n";
 
             if (Objects.Length > 0)
             {
-                result += String.Format("Manufacturer Name: \"{0}\"\r\n", Objects[0]);
+                result += $"Manufacturer Name: \"{Objects[0]}\"\r\n";
             }
 
             if (Objects.Length > 1)
             {
-                result += String.Format("Product Code     : \"{0}\"\r\n", Objects[1]);
+                result += $"Product Code     : \"{Objects[1]}\"\r\n";
             }
 
             if (Objects.Length > 2)
             {
-                result += String.Format("Version Number   : \"{0}\"\r\n", Objects[2]);
+                result += $"Version Number   : \"{Objects[2]}\"\r\n";
             }
 
             if (Objects.Length > 3)
             {
-                result += String.Format("Manufacturer URL : \"{0}\"\r\n", Objects[3]);
+                result += $"Manufacturer URL : \"{Objects[3]}\"\r\n";
             }
 
             if (Objects.Length > 4)
             {
-                result += String.Format("Product Name     : \"{0}\"\r\n", Objects[4]);
+                result += $"Product Name     : \"{Objects[4]}\"\r\n";
             }
 
             if (Objects.Length > 5)
             {
-                result += String.Format("Model Name       : \"{0}\"\r\n", Objects[5]);
+                result += $"Model Name       : \"{Objects[5]}\"\r\n";
             }
 
             if (Objects.Length > 6)
             {
-                result += String.Format("Application Name : \"{0}\"\r\n", Objects[6]);
+                result += $"Application Name : \"{Objects[6]}\"\r\n";
             }
 
             return result;
@@ -643,17 +643,6 @@ namespace UModbus
         }
         #endregion
 
-        #region Fields
-        /// <summary>
-        /// Selected modbus-slave address.
-        /// </summary>
-        private   byte _SlaveAddress;
-        /// <summary>
-        /// Time during which should wait for a response.
-        /// </summary>
-        protected int  _Timeout;
-        #endregion
-
         #region Internal
         /// <summary>
         /// Дописывет HEX-представление массива байт в файл LogFileName.
@@ -665,11 +654,11 @@ namespace UModbus
         {
             if (LogFileName != null && LogFileName != "")
             {
-                string line = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " " + prefix + ":";
+                string line = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + $" {prefix}:";
 
                 for (int i = 0; i < length; i++)
                 {
-                    line += " " + data[i].ToString("X2");
+                    line += $" {data[i]:X2}";
                 }
 
                 File.AppendAllText(LogFileName, line + "\r\n");
@@ -694,7 +683,7 @@ namespace UModbus
                 // 2 - request-depends data or error code
                 if (response.Data.Length > 2)
                 {
-                    if (response.Data[0] == _SlaveAddress)
+                    if (response.Data[0] == SlaveAddress)
                     {
                         if (response.Data[1] == function)
                         {
@@ -724,7 +713,7 @@ namespace UModbus
 
             TransferResponse response = TransferPDU
             (
-                _SlaveAddress,          // 0: slave address
+                SlaveAddress,          // 0: slave address
                 function,               // 1: function read 
                 (byte)(address >> 8),   // 2: start register (MSB)
                 (byte)(address & 0xFF), // 3: start register (LSB)
@@ -763,7 +752,7 @@ namespace UModbus
 
             TransferResponse response = TransferPDU
             (
-                _SlaveAddress,          // 0: slave address
+                SlaveAddress,          // 0: slave address
                 function,               // 1: function read 
                 (byte)(address >> 8),   // 2: start register (MSB)
                 (byte)(address & 0xFF), // 3: start register (LSB)
@@ -800,7 +789,7 @@ namespace UModbus
 
             TransferResponse response = TransferPDU
             (
-                _SlaveAddress,         // 0: slave address
+                SlaveAddress,         // 0: slave address
                 MB_READ_DEVICE_ID,     // 1: get info function code
                 MB_MEI_TYPE_DEVICE_ID, // 2: get info sub-function code
                 IdCode,                // 3: read device id code
@@ -860,41 +849,19 @@ namespace UModbus
         /// </summary>
         public ModbusClient()
         {
-            _SlaveAddress = 0;
-            _Timeout      = 500;
+            SlaveAddress = 0;
+            Timeout      = 500;
         }
 
         /// <summary>
         /// Задает/возвращает modbus-адрес устройства в сети.
         /// </summary>
-        public byte SlaveAddress
-        {
-            get
-            {
-                return _SlaveAddress;
-            }
-
-            set
-            {
-                _SlaveAddress = value;
-            }
-        }
+        public byte SlaveAddress { get; set; }
 
         /// <summary>
         /// Задает/возвращает время в течении которого следует ждать ответ от устройства в мс.
         /// </summary>
-        public int Timeout
-        {
-            get
-            {
-                return _Timeout;
-            }
-
-            set
-            {
-                _Timeout = value;
-            }
-        }
+        public int Timeout { get; set; }
 
         /// <summary>
         /// Задает/возвращает разрешение записи данных запросов и ответов на них в файл.
@@ -966,7 +933,7 @@ namespace UModbus
 
             TransferResponse response = TransferPDU
             (
-                _SlaveAddress,              // 0: slave address
+                SlaveAddress,               // 0: slave address
                 MB_WRITE_SINGLE_COIL,       // 1: function code
                 (byte)(address >> 8),       // 2: start coil (MSB)
                 (byte)(address & 0xFF),     // 3: start coil (LSB)
@@ -1010,7 +977,7 @@ namespace UModbus
 
             TransferResponse response = TransferPDU
             (
-                _SlaveAddress,            // 0: slave address
+                SlaveAddress,             // 0: slave address
                 MB_WRITE_SINGLE_REGISTER, // 1: function code
                 (byte)(address >> 8),     // 2: start register (MSB)
                 (byte)(address & 0xFF),   // 3: start register (LSB)
@@ -1052,7 +1019,7 @@ namespace UModbus
 
             TransferResponse response = TransferPDU
             (
-                _SlaveAddress,           // 0: slave address
+                SlaveAddress,            // 0: slave address
                 MB_READ_EXCEPTION_STATUS // 1: read exception-status function code
             );
 
@@ -1080,7 +1047,7 @@ namespace UModbus
             ByteResponse result = new ByteResponse();
 
             byte[] request = new byte[4 + data.Length];
-            request[0] = _SlaveAddress;              // 0: slave address
+            request[0] = SlaveAddress;               // 0: slave address
             request[1] = MB_DIAGNOSTICS;             // 1: diagnostics function code
             request[2] = (byte)(SubFunction >> 8);   // 2: diagnostics sub-function code (MSB)
             request[3] = (byte)(SubFunction & 0xFF); // 3: diagnostics sub-function code (LSB)
@@ -1121,7 +1088,7 @@ namespace UModbus
 
             TransferResponse response = TransferPDU
             (
-                _SlaveAddress,            // 0: slave address
+                SlaveAddress,             // 0: slave address
                 MB_GET_COMM_EVENT_COUNTER // 1: read status function code
             );
 
@@ -1152,7 +1119,7 @@ namespace UModbus
 
             TransferResponse response = TransferPDU
             (
-                _SlaveAddress,        // 0: slave address
+                SlaveAddress,         // 0: slave address
                 MB_GET_COMM_EVENT_LOG // 1: read event log function code
             );
 
@@ -1194,7 +1161,7 @@ namespace UModbus
             int bits  = coils.Length;
             int bytes = bits / 8 + ((bits%8) == 0 ? 0 : 1);
             byte[] request = new byte[7+bytes];
-            request[0] = _SlaveAddress;              // 0: slave address
+            request[0] = SlaveAddress;               // 0: slave address
             request[1] = MB_WRITE_MULTIPLE_COILS;    // 1: write function 
             request[2] = (byte)(address >> 8);       // 2: start coil (MSB)
             request[3] = (byte)(address & 0xFF);     // 3: start coil (LSB)
@@ -1255,7 +1222,7 @@ namespace UModbus
             int words = registers.Length;
             int bytes = 2 * words;
             byte[] request = new byte[7 + bytes];
-            request[0] = _SlaveAddress;              // 0: slave address
+            request[0] = SlaveAddress;               // 0: slave address
             request[1] = MB_WRITE_MULTIPLE_REGISTER; // 1: write function 
             request[2] = (byte)(address >> 8);       // 2: start register (MSB)
             request[3] = (byte)(address & 0xFF);     // 3: start register (LSB)
@@ -1305,7 +1272,7 @@ namespace UModbus
 
             TransferResponse response = TransferPDU
             (
-                _SlaveAddress,     // 0: slave address
+                SlaveAddress,      // 0: slave address
                 MB_REPORT_SLAVE_ID // 1: report function code
             );
 
@@ -1335,7 +1302,7 @@ namespace UModbus
 
             int bytes = 7 * SubRequests.Length;
             byte[] request = new byte[3+bytes];
-            request[0] = _SlaveAddress;                                  // 0: slave address
+            request[0] = SlaveAddress;                                   // 0: slave address
             request[1] = MB_READ_FILE_RECORD;                            // 1: read file record function code
             request[2] = (byte)(bytes);                                  // 2: byte count
             int offset = 3;
@@ -1416,7 +1383,7 @@ namespace UModbus
 
             int bytes = 9 * records.Length;
             byte[] request = new byte[3+bytes];
-            request[0] = _SlaveAddress;                                    // 0: slave address
+            request[0] = SlaveAddress;                                     // 0: slave address
             request[1] = MB_WRITE_FILE_RECORD;                             // 1: write file record function code
             request[2] = (byte)bytes;                                      // 2: byte count
             int offset = 3;
@@ -1498,7 +1465,7 @@ namespace UModbus
 
             TransferResponse response = TransferPDU
             (
-                _SlaveAddress,          // 0: slave address
+                SlaveAddress,           // 0: slave address
                 MB_MASK_WRITE_REGISTER, // 1: read event log function code
                 (byte)(address >> 8),   // 2: start register (MSB)
                 (byte)(address & 0xFF), // 3: start register (LSB)
@@ -1550,7 +1517,7 @@ namespace UModbus
             int words = WriteData.Length;
             int bytes = 2 * words;
             byte[] request = new byte[11+bytes];
-            request[0]  = _SlaveAddress;               //  0: slave address
+            request[0]  = SlaveAddress;                //  0: slave address
             request[1]  = MB_READWRITE_MULTIPLE_REGS;  //  1: write function 
             request[2]  = (byte)(ReadAddress >> 8);    //  2: read start register (MSB)
             request[3]  = (byte)(ReadAddress & 0xFF);  //  3: read start register (LSB)
@@ -1605,7 +1572,7 @@ namespace UModbus
 
             TransferResponse response = TransferPDU
             (
-                _SlaveAddress,         // 0: slave address
+                SlaveAddress,          // 0: slave address
                 MB_READ_FIFO_QUEUE,    // 1: read fifo queue function code
                 (byte)(pointer >> 8),  // 2: fifo pointer (MSB)
                 (byte)(pointer & 0xFF) // 3: fifo pointer (LSB)
@@ -1670,7 +1637,7 @@ namespace UModbus
             ByteResponse result = new ByteResponse();
 
             byte[] request = new byte[2+parameters.Length];
-            request[0] = _SlaveAddress; // 0: slave address
+            request[0] = SlaveAddress;  // 0: slave address
             request[1] = function;      // 1: user function code
             Array.Copy(parameters, 0, request, 2, parameters.Length);
 
@@ -1697,23 +1664,19 @@ namespace UModbus
     /// </summary>
     public abstract class ModbusSerialClient : ModbusClient
     {
-        #region Fields
-        private   string     _Port;
-        private   int        _Baudrate;
-        private   Parity     _Parity;
-        private   StopBits   _StopBits;
+		#region Fields
+		/// <summary>
+		/// Последовательный порт, через который устанавливается связь с подчиненным Modbus-устройством.
+		/// </summary>
+		protected SerialPort _Uart;
         /// <summary>
-        /// Serial port.
-        /// </summary>
-        protected SerialPort _Uart;
-        /// <summary>
-        /// Correct schecksum value.
+        /// Корректное значение контрольной суммы для заданного протокола.
         /// </summary>
         protected ushort     _CorrectCrc;
-        /// <summary>
-        /// Checksum length in bytes.
-        /// </summary>
-        protected int        _CrcLength;
+		/// <summary>
+		/// Длина контрольной суммы для заданного протокола в байтах.
+		/// </summary>
+		protected int        _CrcLength;
         #endregion
 
         #region Internal
@@ -1772,14 +1735,19 @@ namespace UModbus
 
             return result;
         }
-        #endregion
+		#endregion
 
-        #region Public
-        /// <summary>
-        /// Инициализирует новый экземпляр класса ModbusSerialClient
-        /// </summary>
-        /// <param name="PhysicalAddress">строковое задание физического адреса например: "COM1:9600:8N1"</param>
-        public ModbusSerialClient(string PhysicalAddress) : base()
+		#region Public
+		/// <summary>
+		/// Инициализирует новый экземпляр класса ModbusSerialClient
+		/// </summary>
+		/// <param name="PhysicalAddress">
+		/// Строковое задание физического адреса например: "COM1:9600:8N1".
+		/// При некорректном значении физического адреса будет использовано 
+		/// значение по умолчанию COM1:9600:8N1.
+		/// Значение DataBits фиксировано и равно 8, другие значения считаются ошибкой.
+		/// </param>
+		public ModbusSerialClient(string PhysicalAddress) : base()
         {
             _Uart = new SerialPort();
 
@@ -1788,95 +1756,51 @@ namespace UModbus
             if (Regex.IsMatch(PhysicalAddress, "^COM\\d{1,2}:\\d{1,6}:8(N|O|E|M|S)(1|2|3)$"))
             {
                 var parts = PhysicalAddress.Split(':');
-                _Port     = parts[0];
-                _Baudrate = Convert.ToInt32(parts[1]);
+                Port      = parts[0];
+                Baudrate  = Convert.ToInt32(parts[1]);
                 switch (parts[2][1])
                 {
-                    case 'N': _Parity = Parity.None;  break;
-                    case 'O': _Parity = Parity.Odd;   break;
-                    case 'E': _Parity = Parity.Even;  break;
-                    case 'M': _Parity = Parity.Mark;  break;
-                    case 'S': _Parity = Parity.Space; break;
+                    case 'N': Parity = Parity.None;  break;
+                    case 'O': Parity = Parity.Odd;   break;
+                    case 'E': Parity = Parity.Even;  break;
+                    case 'M': Parity = Parity.Mark;  break;
+                    case 'S': Parity = Parity.Space; break;
                 }
-                _StopBits = (StopBits)Convert.ToInt32(parts[2].Substring(2));
+                StopBits = (StopBits)Convert.ToInt32(parts[2].Substring(2));
             }
             else
             {
-                _Port     = "COM1";
-                _Baudrate = 9600;
-                _Parity   = Parity.None;
-                _StopBits = StopBits.One;
+                Port     = "COM1";
+                Baudrate = 9600;
+                Parity   = Parity.None;
+                StopBits = StopBits.One;
             }
         }
 
         /// <summary>
         /// Задает/возвращает имя последовательного порта.
         /// </summary>
-        public string Port
-        {
-            get
-            {
-                return _Port;
-            }
-
-            set
-            {
-                _Port = value;
-            }
-        }
+        public string Port { get; set; }
 
         /// <summary>
         /// Задает/возвращает скорсть последовательного порта.
         /// </summary>
-        public int Baudrate
-        {
-            get
-            {
-                return _Baudrate;
-            }
+        public int Baudrate { get; set; }
 
-            set
-            {
-                _Baudrate = value;
-            }
-        }
+		/// <summary>
+		/// Задает/возвращает контроль четности последовательного порта.
+		/// </summary>
+		public Parity Parity { get; set; }
 
-        /// <summary>
-        /// Задает/возвращает контроль четности последовательного порта.
-        /// </summary>
-        public Parity Parity
-        {
-            get
-            {
-                return _Parity;
-            }
+		/// <summary>
+		/// Задает/возвращает количество стоп-битов последовательного порта.
+		/// </summary>
+		public StopBits StopBits { get; set; }
 
-            set
-            {
-                _Parity = value;
-            }
-        }
-
-        /// <summary>
-        /// Задает/возвращает количество стоп-битов последовательного порта.
-        /// </summary>
-        public StopBits StopBits
-        {
-            get
-            {
-                return _StopBits;
-            }
-
-            set
-            {
-                _StopBits = value;
-            }
-        }
-
-        /// <summary>
-        /// Возвращает статус соединения по последовательному порту.
-        /// </summary>
-        public override bool IsConnected
+		/// <summary>
+		/// Возвращает статус соединения по последовательному порту.
+		/// </summary>
+		public override bool IsConnected
         {
             get
             {
@@ -1894,11 +1818,11 @@ namespace UModbus
         /// <returns>статус соединения по последовательному порту.</returns>
         public override bool Connect()
         {
-            _Uart.PortName = _Port;
-            _Uart.BaudRate = _Baudrate;
+            _Uart.PortName = Port;
+            _Uart.BaudRate = Baudrate;
             _Uart.DataBits = 8;
-            _Uart.Parity   = _Parity;
-            _Uart.StopBits = _StopBits;
+            _Uart.Parity   = Parity;
+            _Uart.StopBits = StopBits;
 
             try
             {
@@ -1930,21 +1854,22 @@ namespace UModbus
     /// </summary>
     public abstract class ModbusIpClient : ModbusClient
     {
-        #region Modbus-IP Protocol
-        private const byte IP_HEADER_LENGTH = 6;
-        private const byte IP_PROTOCOL      = 0x0000;
+		#region Consts
+		/// <summary>
+		/// Длина заголовка Modbus пакета внутри TCP/UDP пакета
+		/// </summary>
+		private const byte IP_HEADER_LENGTH = 6;
+		/// <summary>
+		/// Идентификатор протокола Modbus поверх TCP/UDP
+		/// </summary>
+		private const byte IP_PROTOCOL      = 0x0000;
         #endregion
 
         #region Fields
-        private   ushort _TransactionId;
-        /// <summary>
-        /// Destination IP address.
-        /// </summary>
-        protected string _IpAddress;
-        /// <summary>
-        /// Destination TCP/UDP port.
-        /// </summary>
-        protected ushort _Port;
+		/// <summary>
+		/// Идентификатор транзакции. Инкрементируется с каждым запросом.
+		/// </summary>
+        private ushort _TransactionId;
         #endregion
 
         #region Internal
@@ -2023,14 +1948,18 @@ namespace UModbus
 
             return result;
         }
-        #endregion
+		#endregion
 
-        #region Public
-        /// <summary>
-        /// Инициализирует новый экземпляр класса ModbusIpClient
-        /// </summary>
-        /// <param name="PhysicalAddress">строковое задание физического адреса например: "192.168.1.100:502"</param>
-        public ModbusIpClient(string PhysicalAddress) : base()
+		#region Public
+		/// <summary>
+		/// Инициализирует новый экземпляр класса ModbusIpClient
+		/// </summary>
+		/// <param name="PhysicalAddress">
+		/// Строковое задание физического адреса например: "192.168.1.100:502"
+		/// При некорректном значении физического адреса будет использовано 
+		/// значение по умолчанию 127.0.0.1:502
+		/// </param>
+		public ModbusIpClient(string PhysicalAddress) : base()
         {
             _TransactionId = 0;
 
@@ -2038,55 +1967,33 @@ namespace UModbus
             {
                 int s = PhysicalAddress.IndexOf(':');
 
-                if (s == -1)
-                {
-                    _IpAddress = PhysicalAddress;
-                    _Port      = 502;
-                }
-                else
-                {
-                    _IpAddress = PhysicalAddress.Substring(0, s);
-                    _Port      = Convert.ToUInt16(PhysicalAddress.Substring(s + 1));
-                }
+				if (s == -1)
+				{
+					IpAddress = PhysicalAddress;
+					Port      = 502;
+				}
+				else
+				{
+					IpAddress = PhysicalAddress.Substring(0, s);
+					Port      = Convert.ToUInt16(PhysicalAddress.Substring(s + 1));
+				}
             }
             else
             {
-                _IpAddress = "127.0.0.1";
-                _Port      = 502;
+                IpAddress = "127.0.0.1";
+                Port      = 502;
             }
         }
 
         /// <summary>
         /// Задает/возвращает IP адрес устройства.
         /// </summary>
-        public string IpAddress
-        {
-            get
-            {
-                return _IpAddress;
-            }
-
-            set
-            {
-                _IpAddress = value;
-            }
-        }
+        public string IpAddress { get; set; }
 
         /// <summary>
         /// Задает/возвращает TCP/IP или UDP/IP порт устройства.
         /// </summary>
-        public ushort Port
-        {
-            get
-            {
-                return _Port;
-            }
-
-            set
-            {
-                _Port = value;
-            }
-        }
+        public ushort Port { get; set; }
         #endregion
     }
     #endregion
@@ -2097,9 +2004,18 @@ namespace UModbus
     /// </summary>
     public class ModbusRtuClient : ModbusSerialClient
     {
-        #region Const
+        #region Consts
+		/// <summary>
+		/// Полином алгоритма контрольной суммы CRC16.
+		/// </summary>
         private const ushort CRC16_POLYNOM    = 0xA001;
-        private const ushort CRC16_INITIAL    = 0xFFFF;
+		/// <summary>
+		/// Начальное значение вычисляемой контрольной суммы CRC16.
+		/// </summary>
+		private const ushort CRC16_INITIAL    = 0xFFFF;
+		/// <summary>
+		/// Размер входного буффера для приема ответа от подчиненного Modbus устройства.
+		/// </summary>
         private const int    RESP_BUFFER_SIZE = 1024;
         #endregion
 
@@ -2108,7 +2024,7 @@ namespace UModbus
         /// Реализация контрольной вычисления суммы CRC16.
         /// </summary>
         /// <param name="data">пакет данных.</param>
-        /// <returns>16битная контрольная сумма.</returns>
+        /// <returns>16-битная контрольная сумма.</returns>
         protected override ushort CheckSum(byte[] data)
         {
             ushort result = CRC16_INITIAL;
@@ -2149,7 +2065,7 @@ namespace UModbus
                 int      reads  = 0;
                 byte[]   buffer = new byte[RESP_BUFFER_SIZE];
                 DateTime start  = DateTime.Now;
-                while ((DateTime.Now - start).TotalMilliseconds < _Timeout)
+                while ((DateTime.Now - start).TotalMilliseconds < Timeout)
                 {
                     reads += _Uart.Read(buffer, reads, _Uart.BytesToRead);
                 }
@@ -2177,17 +2093,22 @@ namespace UModbus
 
             return result;
         }
-        #endregion
+		#endregion
 
-        #region Public
-        /// <summary>
-        /// Инициализирует новый экземпляр класса ModbusRtuClient
-        /// </summary>
-        /// <param name="PhysicalAddress">строковое задание физического адреса например: "COM1:9600:8N1"</param>
-        public ModbusRtuClient(string PhysicalAddress) : base(PhysicalAddress)
+		#region Public
+		/// <summary>
+		/// Инициализирует новый экземпляр класса ModbusRtuClient
+		/// </summary>
+		/// <param name="PhysicalAddress">
+		/// Строковое задание физического адреса например: "COM1:9600:8N1".
+		/// При некорректном значении физического адреса будет использовано 
+		/// значение по умолчанию COM1:9600:8N1.
+		/// Значение DataBits фиксировано и равно 8, другие значения считаются ошибкой.
+		/// </param>
+		public ModbusRtuClient(string PhysicalAddress) : base(PhysicalAddress)
         {
-            _CrcLength  = 2;
-            _CorrectCrc = 0x0000;
+            _CrcLength  = 2;      // CRC16 => 2 байта
+            _CorrectCrc = 0x0000; // контрольная сумма от всего пакета (включая CRC) должна давать 0.
         }
         #endregion
     }
@@ -2197,32 +2118,60 @@ namespace UModbus
     /// </summary>
     public class ModbusAsciiClient : ModbusSerialClient
     {
-        #region Const
+        #region Consts
+		/// <summary>
+		/// Размер стартовой последовательности в байтах.
+		/// </summary>
         private const int  ASCII_START_SIZE = 1;
+		/// <summary>
+		/// Размер в байтах одного закодированного байта.
+		/// </summary>
         private const int  ASCII_BYTE_SIZE  = 2;
-        private const int  ASCII_STOP_SIZE  = 2;
+		/// <summary>
+		/// Размер стоповой последовательности в байтах.
+		/// </summary>
+		private const int  ASCII_STOP_SIZE  = 2;
+		/// <summary>
+		/// Маркер начала пакета.
+		/// </summary>
         private const byte ASCII_START_MARK = 0x3A;
-        private const byte ASCII_STOP1_MARK = 0x0D;
+		/// <summary>
+		/// Маркер конца пакета.
+		/// </summary>
+		private const byte ASCII_STOP1_MARK = 0x0D;
         private const byte ASCII_STOP2_MARK = 0x0A;
-        private const int  RESP_BUFFER_SIZE = 1024;
-        #endregion
+		/// <summary>
+		/// Размер входного буффера для приема ответа от подчиненного Modbus устройства.
+		/// </summary>
+		private const int  RESP_BUFFER_SIZE = 1024;
+		#endregion
 
-        #region Internal
-        private byte TetradeEncode(byte tetrade)
+		#region Internal
+		/// <summary>
+		/// Преобразование младшей тетрады входного байта tetrade в его ASCII изображение.
+		/// </summary>
+		/// <param name="tetrade">Тетрада байта, которую неоходимо закодировать.</param>
+		/// <returns>Код символа ASCII, соответствующий входным данным.</returns>
+		private byte TetradeEncode(byte tetrade)
         {
             tetrade &= 0x0F;
             return (byte)(tetrade + (tetrade < 10 ? 0x30 : 0x37));
         }
 
-        private int TetradeDecode(byte tetrade)
+		/// <summary>
+		/// Преобразование ASCII изображения терады закодированного байта в значение тетрады.
+		/// </summary>
+		/// <param name="tetrade">Код ASCII символа, тетрады закодированного байта.</param>
+		/// <returns>значение тетрады, соответствующее входным данным.</returns>
+		private int TetradeDecode(byte tetrade)
         {
-            if (0x2F < tetrade && tetrade < 0x3A)
+            if (0x2F < tetrade && tetrade < 0x3A) // числовые значения 0..9
             {
                 return tetrade - 0x30;
             }
 
-            tetrade &= 0xDF;
-            if (0x40 < tetrade && tetrade < 0x47)
+            tetrade &= 0xDF;                      // перевод в верхний регистр
+            if (0x40 < tetrade && tetrade < 0x47) // буквы A..F
             {
                 return tetrade - 0x37;
             }
@@ -2285,7 +2234,7 @@ namespace UModbus
                 int      reads  = 0;
                 byte[]   buffer = new byte[RESP_BUFFER_SIZE];
                 DateTime start  = DateTime.Now;
-                while ((DateTime.Now - start).TotalMilliseconds < _Timeout)
+                while ((DateTime.Now - start).TotalMilliseconds < Timeout)
                 {
                     reads += _Uart.Read(buffer, reads, _Uart.BytesToRead);
                 }
@@ -2340,18 +2289,24 @@ namespace UModbus
 
             return result;
         }
-        #endregion
+		#endregion
 
-        #region Public
-        /// <summary>
-        /// Инициализирует новый экземпляр класса ModbusRtuClient
-        /// </summary>
-        /// <param name="PhysicalAddress">строковое задание физического адреса например: "COM1:9600:8N1"</param>
-        public ModbusAsciiClient(string PhysicalAddress) : base(PhysicalAddress)
+		#region Public
+		/// <summary>
+		/// Инициализирует новый экземпляр класса ModbusRtuClient
+		/// </summary>
+		/// <param name="PhysicalAddress">
+		/// Строковое задание физического адреса например: "COM1:9600:8N1".
+		/// При некорректном значении физического адреса будет использовано 
+		/// значение по умолчанию COM1:9600:8N1.
+		/// Значение DataBits фиксировано и равно 8, другие значения считаются ошибкой.
+		/// </param>
+		public ModbusAsciiClient(string PhysicalAddress) : base(PhysicalAddress)
         {
             _CrcLength  = 1;
-            _CorrectCrc = 0x3030;
-        }
+            _CorrectCrc = 0x3030; // контрольная сумма от всего пакета (включая CRC) должна давать 0.
+			                      // 0 - в кодировке ModbusASCII - два символа '0'.
+		}
         #endregion
     }
 
@@ -2360,8 +2315,11 @@ namespace UModbus
     /// </summary>
     public class ModbusTcpClient : ModbusIpClient
     {
-        #region Const
-        private const int RESP_BUFFER_SIZE = 1024;
+		#region Consts
+		/// <summary>
+		/// Размер входного буффера для приема ответа от подчиненного Modbus устройства.
+		/// </summary>
+		private const int RESP_BUFFER_SIZE = 1024;
         #endregion
 
         #region Fields
@@ -2414,14 +2372,18 @@ namespace UModbus
 
             return result;
         }
-        #endregion
+		#endregion
 
-        #region Public
-        /// <summary>
-        /// Инициализирует новый экземпляр класса ModbusTcpClient
-        /// </summary>
-        /// <param name="PhysicalAddress">строковое задание физического адреса например: "192.168.1.100:502"</param>
-        public ModbusTcpClient(string PhysicalAddress) : base(PhysicalAddress)
+		#region Public
+		/// <summary>
+		/// Инициализирует новый экземпляр класса ModbusTcpClient
+		/// </summary>
+		/// <param name="PhysicalAddress">
+		/// Строковое задание физического адреса например: "192.168.1.100:502"
+		/// При некорректном значении физического адреса будет использовано 
+		/// значение по умолчанию 127.0.0.1:502
+		/// </param>
+		public ModbusTcpClient(string PhysicalAddress) : base(PhysicalAddress)
         {
 
         }
@@ -2448,15 +2410,15 @@ namespace UModbus
         public override bool Connect()
         {
             _TcpClient = new TcpClient();
-            var result = _TcpClient.BeginConnect(_IpAddress, _Port, null, null);
+            var result = _TcpClient.BeginConnect(IpAddress, Port, null, null);
 
-            if (result.AsyncWaitHandle.WaitOne(_Timeout))
+            if (result.AsyncWaitHandle.WaitOne(Timeout))
             {
                 try
                 {
                     _TcpClient.EndConnect(result);
                     _NetworkStream             = _TcpClient.GetStream();
-                    _NetworkStream.ReadTimeout = _Timeout;
+                    _NetworkStream.ReadTimeout = Timeout;
 
                     return _TcpClient.Connected;
                 }
@@ -2495,8 +2457,11 @@ namespace UModbus
     /// </summary>
     public class ModbusUdpClient : ModbusIpClient
     {
-        #region Const
-        private const int RESP_BUFFER_SIZE = 1024;
+		#region Consts
+		/// <summary>
+		/// Размер входного буффера для приема ответа от подчиненного Modbus устройства.
+		/// </summary>
+		private const int RESP_BUFFER_SIZE = 1024;
         #endregion
 
         #region Fields
@@ -2540,14 +2505,18 @@ namespace UModbus
 
             return result;
         }
-        #endregion
+		#endregion
 
-        #region Public
-        /// <summary>
-        /// Инициализирует новый экземпляр класса ModbusUdpClient
-        /// </summary>
-        /// <param name="PhysicalAddress">строковое задание физического адреса например: "192.168.1.100:502"</param>
-        public ModbusUdpClient(string PhysicalAddress) : base(PhysicalAddress)
+		#region Public
+		/// <summary>
+		/// Инициализирует новый экземпляр класса ModbusUdpClient
+		/// </summary>
+		/// <param name="PhysicalAddress">
+		/// Строковое задание физического адреса например: "192.168.1.100:502"
+		/// При некорректном значении физического адреса будет использовано 
+		/// значение по умолчанию 127.0.0.1:502
+		/// </param>
+		public ModbusUdpClient(string PhysicalAddress) : base(PhysicalAddress)
         {
 
         }
@@ -2572,9 +2541,8 @@ namespace UModbus
             try
             {
                 _UdpClient     = new UdpClient();
-                _UdpClient.Client.ReceiveTimeout = _Timeout;
-                IPAddress IP   = IPAddress.Parse(_IpAddress);
-                _SlaveEndPoint = new IPEndPoint(IP, _Port);
+                _UdpClient.Client.ReceiveTimeout = Timeout;
+                _SlaveEndPoint = new IPEndPoint(IPAddress.Parse(IpAddress), Port);
             }
             catch
             {

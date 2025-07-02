@@ -4,527 +4,526 @@
         <name>UModbus</name>
     </assembly>
     <members>
-        <member name="T:UModbus.RequestStatus">
+        <member name="T:UModbus.Client.RequestStatus">
             <summary>
             Статус ответа на modbus запрос
             </summary>
         </member>
-        <member name="F:UModbus.RequestStatus.Valid">
+        <member name="F:UModbus.Client.RequestStatus.Valid">
             <summary>
             Ошибок не обнаружено.
             </summary>
         </member>
-        <member name="F:UModbus.RequestStatus.IllegalFunction">
+        <member name="F:UModbus.Client.RequestStatus.IllegalFunction">
             <summary>
-            Стандарный код ошибки протокла modbus. Функция запроса не поддерживается устройством.
+            Стандарный код ошибки протокола modbus. Функция запроса не поддерживается устройством.
             </summary>
         </member>
-        <member name="F:UModbus.RequestStatus.IllegalDataAddress">
+        <member name="F:UModbus.Client.RequestStatus.IllegalDataAddress">
             <summary>
-            Стандарный код ошибки протокла modbus. Некорректный для устройства начальный адрес флага/регистра.
+            Стандарный код ошибки протокола modbus. Некорректный для устройства начальный адрес флага/регистра.
             </summary>
         </member>
-        <member name="F:UModbus.RequestStatus.IllegalDataValue">
+        <member name="F:UModbus.Client.RequestStatus.IllegalDataValue">
             <summary>
-            Стандарный код ошибки протокла modbus. Значение, содержащееся в поле данных запроса, не является допустимым.
+            Стандарный код ошибки протокола modbus. Значение, содержащееся в поле данных запроса, не является допустимым.
             </summary>
         </member>
-        <member name="F:UModbus.RequestStatus.SlaveDeviceFailure">
+        <member name="F:UModbus.Client.RequestStatus.SlaveDeviceFailure">
             <summary>
-            Стандарный код ошибки протокла modbus. Произошла неисправимая ошибка, когда slave пытался выполнить запрошенное действие.
+            Стандарный код ошибки протокола modbus. Произошла неисправимая ошибка, когда slave пытался выполнить запрошенное действие.
             </summary>
         </member>
-        <member name="F:UModbus.RequestStatus.Acknowledge">
+        <member name="F:UModbus.Client.RequestStatus.Acknowledge">
             <summary>
-            Стандарный код ошибки протокла modbus. Slave принял запрос и обрабатывает его, но ответные данные будут готовы через продолжительный период времени.
+            Стандарный код ошибки протокола modbus. Slave принял запрос и обрабатывает его, но ответные данные будут готовы через продолжительный период времени.
             </summary>
         </member>
-        <member name="F:UModbus.RequestStatus.SlaveDeviceBusy">
+        <member name="F:UModbus.Client.RequestStatus.SlaveDeviceBusy">
             <summary>
-            Стандарный код ошибки протокла modbus. Slave занимается обработкой длительной команды. Клиент должен повторно передать сообщение позже.
+            Стандарный код ошибки протокола modbus. Slave занимается обработкой длительной команды. Клиент должен повторно передать сообщение позже.
             </summary>
         </member>
-        <member name="F:UModbus.RequestStatus.MemoryParityError">
+        <member name="F:UModbus.Client.RequestStatus.MemoryParityError">
             <summary>
-            Стандарный код ошибки протокла modbus. Slave попытался прочитать запись из файла, но обнаружил ошибку четности в памяти.
+            Стандарный код ошибки протокола modbus. Slave попытался прочитать запись из файла, но обнаружил ошибку четности в памяти.
             </summary>
         </member>
-        <member name="F:UModbus.RequestStatus.GateWayPathUnavailable">
+        <member name="F:UModbus.Client.RequestStatus.GateWayPathUnavailable">
             <summary>
-            Стандарный код ошибки протокла modbus. Обычно означает, что шлюз настроен неправильно или перегружен.
+            Стандарный код ошибки протокола modbus. Обычно означает, что шлюз настроен неправильно или перегружен.
             </summary>
         </member>
-        <member name="F:UModbus.RequestStatus.GateWayTargetFailed">
+        <member name="F:UModbus.Client.RequestStatus.GateWayTargetFailed">
             <summary>
-            Стандарный код ошибки протокла modbus. Указывает на то, что ответ не был получен от Slave устройство. 
+            Стандарный код ошибки протокола modbus. Указывает на то, что ответ не был получен от Slave устройство. 
             </summary>
         </member>
-        <member name="F:UModbus.RequestStatus.ResponseLengthInvalid">
+        <member name="F:UModbus.Client.RequestStatus.ResponseLengthInvalid">
             <summary>
             Получен пакет меньшей длины чем минимально возможная.
             </summary>
         </member>
-        <member name="F:UModbus.RequestStatus.DifferentSlaveAddress">
+        <member name="F:UModbus.Client.RequestStatus.DifferentSlaveAddress">
             <summary>
             Получен ответ от другого устройства.
             </summary>
         </member>
-        <member name="F:UModbus.RequestStatus.DifferentFunction">
+        <member name="F:UModbus.Client.RequestStatus.DifferentFunction">
             <summary>
             Получен ответ на другой запрос.
             </summary>
         </member>
-        <member name="F:UModbus.RequestStatus.DifferentSubFunction">
+        <member name="F:UModbus.Client.RequestStatus.DifferentSubFunction">
             <summary>
             Получен ответ на другой запрос.
             </summary>
         </member>
-        <member name="F:UModbus.RequestStatus.DataLengthInvalid">
+        <member name="F:UModbus.Client.RequestStatus.DataLengthInvalid">
             <summary>
             Получен пакет с длиной блока данных меньшей минимально возможной.
             </summary>
         </member>
-        <member name="F:UModbus.RequestStatus.DifferentWriteAddress">
+        <member name="F:UModbus.Client.RequestStatus.DifferentWriteAddress">
             <summary>
             Получен ответ с другим начальным адресом флага/регистра.
             </summary>
         </member>
-        <member name="F:UModbus.RequestStatus.IpPacketLengthInvalid">
+        <member name="F:UModbus.Client.RequestStatus.IpPacketLengthInvalid">
             <summary>
             Получен IP пакет меньшей длины чем минимально возможная.
             </summary>
         </member>
-        <member name="F:UModbus.RequestStatus.IpDifferentTransaction">
+        <member name="F:UModbus.Client.RequestStatus.IpDifferentTransaction">
             <summary>
             Получен ответ с другим идентификатором IP транзакции.
             </summary>
         </member>
-        <member name="F:UModbus.RequestStatus.IpDifferentProtocol">
+        <member name="F:UModbus.Client.RequestStatus.IpDifferentProtocol">
             <summary>
             Получен ответ с другим типом протокола.
             </summary>
         </member>
-        <member name="F:UModbus.RequestStatus.IpDataLengthInvalid">
+        <member name="F:UModbus.Client.RequestStatus.IpDataLengthInvalid">
             <summary>
             Получен пакет с длиной блока данных меньшей минимально возможной.
             </summary>
         </member>
-        <member name="F:UModbus.RequestStatus.SerialBadCheckSum">
+        <member name="F:UModbus.Client.RequestStatus.SerialBadCheckSum">
             <summary>
             Некорректная контрольная сумма ответного пакета.
             </summary>      
         </member>
-        <member name="F:UModbus.RequestStatus.SerialPortError">
+        <member name="F:UModbus.Client.RequestStatus.SerialPortError">
             <summary>
             Ошибка при передаче через последовательный порт.
             </summary>
         </member>
-        <member name="F:UModbus.RequestStatus.SerialLengthInvalid">
+        <member name="F:UModbus.Client.RequestStatus.SerialLengthInvalid">
             <summary>
             Получен пакет меньшей длины чем минимально возможная.
             </summary>
         </member>
-        <member name="F:UModbus.RequestStatus.AsciiMissingStartMark">
+        <member name="F:UModbus.Client.RequestStatus.AsciiMissingStartMark">
             <summary>
             В полученом ответном ASCII пакете отсутствует стартовая последовательность.
             </summary>
         </member>
-        <member name="F:UModbus.RequestStatus.AsciiMissingStopMark">
+        <member name="F:UModbus.Client.RequestStatus.AsciiMissingStopMark">
             <summary>
             В полученом ответном ASCII пакете отсутствует стоповая последовательность.
             </summary>
         </member>
-        <member name="F:UModbus.RequestStatus.AsciiIllegalSymbol">
+        <member name="F:UModbus.Client.RequestStatus.AsciiIllegalSymbol">
             <summary>
             В полученом ответном ASCII пакете обнаружен недопустимый символ.
             </summary>
         </member>
-        <member name="F:UModbus.RequestStatus.TcpNoConnection">
+        <member name="F:UModbus.Client.RequestStatus.TcpNoConnection">
             <summary>
             Ошибка TCP подключения.
             </summary>        
         </member>
-        <member name="F:UModbus.RequestStatus.TcpNetworkError">
+        <member name="F:UModbus.Client.RequestStatus.TcpNetworkError">
             <summary>
             Ошибка передачи/приема пакета TCP/IP.
             </summary>
         </member>
-        <member name="F:UModbus.RequestStatus.UdpNetworkError">
+        <member name="F:UModbus.Client.RequestStatus.UdpNetworkError">
             <summary>
             Ошибка передачи/приема пакета UDP/IP.
             </summary>
         </member>
-        <member name="T:UModbus.BitResponse">
+        <member name="T:UModbus.Client.BitResponse">
             <summary>
             Тип ответа на запрос чтения флагов.
             </summary>
         </member>
-        <member name="F:UModbus.BitResponse.Status">
+        <member name="F:UModbus.Client.BitResponse.Status">
             <summary>
             Статус ответа.
             </summary>
         </member>
-        <member name="F:UModbus.BitResponse.Raw">
+        <member name="F:UModbus.Client.BitResponse.Raw">
             <summary>
             Сырые данные.
             </summary>
         </member>
-        <member name="F:UModbus.BitResponse.Data">
+        <member name="F:UModbus.Client.BitResponse.Data">
             <summary>
             Массив считанных значений флагов.
             </summary>
         </member>
-        <member name="T:UModbus.WordResponse">
+        <member name="T:UModbus.Client.WordResponse">
             <summary>
             Тип ответа на запрос чтения регистров.
             </summary>
         </member>
-        <member name="F:UModbus.WordResponse.Status">
+        <member name="F:UModbus.Client.WordResponse.Status">
             <summary>
             Статус ответа.
             </summary>
         </member>
-        <member name="F:UModbus.WordResponse.Raw">
+        <member name="F:UModbus.Client.WordResponse.Raw">
             <summary>
             Сырые данные.
             </summary>
         </member>
-        <member name="F:UModbus.WordResponse.Data">
+        <member name="F:UModbus.Client.WordResponse.Data">
             <summary>
             Массив считанных значений регистров. 
             </summary>
         </member>
-        <member name="T:UModbus.ByteResponse">
+        <member name="T:UModbus.Client.ByteResponse">
             <summary>
             Тип не структурированного ответа на запрос.
             </summary>
         </member>
-        <member name="F:UModbus.ByteResponse.Status">
+        <member name="F:UModbus.Client.ByteResponse.Status">
             <summary>
             Статус ответа.
             </summary>
         </member>
-        <member name="F:UModbus.ByteResponse.Data">
+        <member name="F:UModbus.Client.ByteResponse.Data">
             <summary>
             Сырые данные из ответного пакета.
             </summary>
         </member>
-        <member name="T:UModbus.IdResponse">
+        <member name="T:UModbus.Client.IdResponse">
             <summary>
             Тип ответа на запрос чтения DeviceIdentification (FC43).
             </summary>
         </member>
-        <member name="F:UModbus.IdResponse.Status">
+        <member name="F:UModbus.Client.IdResponse.Status">
             <summary>
             Статус ответа.
             </summary>
         </member>
-        <member name="F:UModbus.IdResponse.ProductId">
+        <member name="F:UModbus.Client.IdResponse.ProductId">
             <summary>
             Идентификатор продукта.
             </summary>
         </member>
-        <member name="F:UModbus.IdResponse.ConformityLevel">
+        <member name="F:UModbus.Client.IdResponse.ConformityLevel">
             <summary>
             Уровень представления
             </summary>
         </member>
-        <member name="F:UModbus.IdResponse.Objects">
+        <member name="F:UModbus.Client.IdResponse.Objects">
             <summary>
             Массив строк описания устройства.
             </summary>
         </member>
-        <member name="M:UModbus.IdResponse.ToString">
+        <member name="M:UModbus.Client.IdResponse.ToString">
             <summary>
             Возвращает строковое представление.
             </summary>
             <returns></returns>
         </member>
-        <member name="T:UModbus.WriteResponse">
+        <member name="T:UModbus.Client.WriteResponse">
             <summary>
             Тип ответа на запрос записи.
             </summary>
         </member>
-        <member name="F:UModbus.WriteResponse.Status">
+        <member name="F:UModbus.Client.WriteResponse.Status">
             <summary>
             Статус ответа.
             </summary>
         </member>
-        <member name="F:UModbus.WriteResponse.Recorded">
+        <member name="F:UModbus.Client.WriteResponse.Recorded">
             <summary>
             Количество записанных флагов/регистров.
             </summary>
         </member>
-        <member name="T:UModbus.ExceptionResponse">
+        <member name="T:UModbus.Client.ExceptionResponse">
             <summary>
             Тип ответа на запрос чтения ExceptionStatus (FC07).
             </summary>
         </member>
-        <member name="F:UModbus.ExceptionResponse.Status">
+        <member name="F:UModbus.Client.ExceptionResponse.Status">
             <summary>
             Статус ответа.
             </summary>
         </member>
-        <member name="F:UModbus.ExceptionResponse.ExceptionCode">
+        <member name="F:UModbus.Client.ExceptionResponse.ExceptionCode">
             <summary>
             Код ошибки.
             </summary>
         </member>
-        <member name="T:UModbus.StatusResponse">
+        <member name="T:UModbus.Client.StatusResponse">
             <summary>
             Тип ответа на запрос состояния (FC11).
             </summary>
         </member>
-        <member name="F:UModbus.StatusResponse.Status">
+        <member name="F:UModbus.Client.StatusResponse.Status">
             <summary>
             Статус ответа.
             </summary>
         </member>
-        <member name="F:UModbus.StatusResponse.StatusWord">
+        <member name="F:UModbus.Client.StatusResponse.StatusWord">
             <summary>
             Слово состояния.
             </summary>
         </member>
-        <member name="F:UModbus.StatusResponse.EventCount">
+        <member name="F:UModbus.Client.StatusResponse.EventCount">
             <summary>
             Количество записей в журнале событий.
             </summary>
         </member>
-        <member name="T:UModbus.EventLogResponse">
+        <member name="T:UModbus.Client.EventLogResponse">
             <summary>
             Тип ответа на запрос записи журнала (FC12).
             </summary>
         </member>
-        <member name="F:UModbus.EventLogResponse.Status">
+        <member name="F:UModbus.Client.EventLogResponse.Status">
             <summary>
             Статус ответа.
             </summary>
         </member>
-        <member name="F:UModbus.EventLogResponse.StatusWord">
+        <member name="F:UModbus.Client.EventLogResponse.StatusWord">
             <summary>
             Слово состояния.
             </summary>
         </member>
-        <member name="F:UModbus.EventLogResponse.EventCount">
+        <member name="F:UModbus.Client.EventLogResponse.EventCount">
             <summary>
             Количество записей в журнале событий.
             </summary>
         </member>
-        <member name="F:UModbus.EventLogResponse.MessageCount">
+        <member name="F:UModbus.Client.EventLogResponse.MessageCount">
             <summary>
             Количество сообщений.
             </summary>
         </member>
-        <member name="F:UModbus.EventLogResponse.Events">
+        <member name="F:UModbus.Client.EventLogResponse.Events">
             <summary>
             до 64-х однобайтовых записей о событиях.
             </summary>
         </member>
-        <member name="T:UModbus.FileRecordSubReq">
+        <member name="T:UModbus.Client.FileRecordSubReq">
             <summary>
             Тип элемента запроса чтения записей из файла (FC20).
             </summary>
         </member>
-        <member name="F:UModbus.FileRecordSubReq.File">
+        <member name="F:UModbus.Client.FileRecordSubReq.File">
             <summary>
             Номер файла.
             </summary>
         </member>
-        <member name="F:UModbus.FileRecordSubReq.Record">
+        <member name="F:UModbus.Client.FileRecordSubReq.Record">
             <summary>
             Номер записи в выбранном файле.
             В файле может быть до 10000 записей (0-9999).
             </summary>
         </member>
-        <member name="F:UModbus.FileRecordSubReq.Length">
+        <member name="F:UModbus.Client.FileRecordSubReq.Length">
             <summary>
             Длина записи.
             </summary>
         </member>
-        <member name="T:UModbus.FileRecordResponse">
+        <member name="T:UModbus.Client.FileRecordResponse">
             <summary>
             Тип ответа на чтение записей из файла (FC20)
             </summary>
         </member>
-        <member name="F:UModbus.FileRecordResponse.Status">
+        <member name="F:UModbus.Client.FileRecordResponse.Status">
             <summary>
             Статус ответа.
             </summary>
         </member>
-        <member name="F:UModbus.FileRecordResponse.Raw">
+        <member name="F:UModbus.Client.FileRecordResponse.Raw">
             <summary>
             Сырые данные.
             </summary>
         </member>
-        <member name="F:UModbus.FileRecordResponse.Records">
+        <member name="F:UModbus.Client.FileRecordResponse.Records">
             <summary>
             Массив считанных значений записей.
             </summary>
         </member>
-        <member name="T:UModbus.FileRecord">
+        <member name="T:UModbus.Client.FileRecord">
             <summary>
             Тип записи для записи в файл (FC21)
             </summary>
         </member>
-        <member name="F:UModbus.FileRecord.File">
+        <member name="F:UModbus.Client.FileRecord.File">
             <summary>
             Номер файла.
             </summary>
         </member>
-        <member name="F:UModbus.FileRecord.Record">
+        <member name="F:UModbus.Client.FileRecord.Record">
             <summary>
             Номер записи в выбранном файле.
             В файле может быть до 10000 записей (0-9999).
             </summary>
         </member>
-        <member name="F:UModbus.FileRecord.Data">
+        <member name="F:UModbus.Client.FileRecord.Data">
             <summary>
             Данные записи.
             </summary>
         </member>
-        <member name="T:UModbus.ModbusClient">
+        <member name="T:UModbus.Client.ModbusClient">
             <summary>
             Базовый класс Modbus-клиента.
             </summary>
         </member>
-        <member name="F:UModbus.ModbusClient.MB_ERROR_FLAG">
+        <member name="F:UModbus.Client.ModbusClient.MB_ERROR_FLAG">
             <summary>
             Флаг ошибки, добавляемый устройством к коду функции запроса, при ошибке.
             </summary>
         </member>
-        <member name="F:UModbus.ModbusClient.MB_READ_COIL_STATUS">
+        <member name="F:UModbus.Client.ModbusClient.MB_READ_COIL_STATUS">
             <summary>
             Стандартная modbus функция FC01 - чтение одного/нескольких флагов (coils).
             </summary>
         </member>
-        <member name="F:UModbus.ModbusClient.MB_READ_DISCRETE_INPUTS">
+        <member name="F:UModbus.Client.ModbusClient.MB_READ_DISCRETE_INPUTS">
             <summary>
             Стандартная modbus функция FC02 - чтение одного/нескольких флагов (discrete inputs).
             </summary>
         </member>
-        <member name="F:UModbus.ModbusClient.MB_READ_HOLDING_REGISTERS">
+        <member name="F:UModbus.Client.ModbusClient.MB_READ_HOLDING_REGISTERS">
             <summary>
             Стандартная modbus функция FC03 - чтение одного/нескольких регистров хранения.
             </summary>
         </member>
-        <member name="F:UModbus.ModbusClient.MB_READ_INPUT_REGISTERS">
+        <member name="F:UModbus.Client.ModbusClient.MB_READ_INPUT_REGISTERS">
             <summary>
             Стандартная modbus функция FC04 - чтение одного/нескольких входных регистров.
             </summary>
         </member>
-        <member name="F:UModbus.ModbusClient.MB_WRITE_SINGLE_COIL">
+        <member name="F:UModbus.Client.ModbusClient.MB_WRITE_SINGLE_COIL">
             <summary>
             Стандартная modbus функция FC05 - запись значения одного флага (coil).
             </summary>
         </member>
-        <member name="F:UModbus.ModbusClient.MB_WRITE_SINGLE_REGISTER">
+        <member name="F:UModbus.Client.ModbusClient.MB_WRITE_SINGLE_REGISTER">
             <summary>
             Стандартная modbus функция FC06 - запись значения одного регистра хранения.
             </summary>
         </member>
-        <member name="F:UModbus.ModbusClient.MB_READ_EXCEPTION_STATUS">
+        <member name="F:UModbus.Client.ModbusClient.MB_READ_EXCEPTION_STATUS">
             <summary>
             Стандартная modbus функция FC07 - чтение кода ошибки.
             </summary>
         </member>
-        <member name="F:UModbus.ModbusClient.MB_DIAGNOSTICS">
+        <member name="F:UModbus.Client.ModbusClient.MB_DIAGNOSTICS">
             <summary>
             Стандартная modbus функция FC08 - диагностика устройства.
             </summary>
         </member>
-        <member name="F:UModbus.ModbusClient.MB_GET_COMM_EVENT_COUNTER">
+        <member name="F:UModbus.Client.ModbusClient.MB_GET_COMM_EVENT_COUNTER">
             <summary>
             Стандартная modbus функция FC11 - чтение слова состояния и количества событий в журнале.
             </summary>
         </member>
-        <member name="F:UModbus.ModbusClient.MB_GET_COMM_EVENT_LOG">
+        <member name="F:UModbus.Client.ModbusClient.MB_GET_COMM_EVENT_LOG">
             <summary>
             Стандартная modbus функция FC12 - чтение записей событий из журнала.
             </summary>
         </member>
-        <member name="F:UModbus.ModbusClient.MB_WRITE_MULTIPLE_COILS">
+        <member name="F:UModbus.Client.ModbusClient.MB_WRITE_MULTIPLE_COILS">
             <summary>
             Стандартная modbus функция FC15 - запись значений нескольких флагов (coils).
             </summary>
         </member>
-        <member name="F:UModbus.ModbusClient.MB_WRITE_MULTIPLE_REGISTER">
+        <member name="F:UModbus.Client.ModbusClient.MB_WRITE_MULTIPLE_REGISTER">
             <summary>
             Стандартная modbus функция FC16 - запись значений нескольких регистров хранения.
             </summary>
         </member>
-        <member name="F:UModbus.ModbusClient.MB_REPORT_SLAVE_ID">
+        <member name="F:UModbus.Client.ModbusClient.MB_REPORT_SLAVE_ID">
             <summary>
             Стандартная modbus функция FC17 - чтение описания типа, текущего состояния и другой информации, 
             специфичной для конкретного устройства.
             </summary>
         </member>
-        <member name="F:UModbus.ModbusClient.MB_READ_FILE_RECORD">
+        <member name="F:UModbus.Client.ModbusClient.MB_READ_FILE_RECORD">
             <summary>
             Стандартная modbus функция FC20 - чтение массива записей из файла.
             </summary>
         </member>
-        <member name="F:UModbus.ModbusClient.MB_WRITE_FILE_RECORD">
+        <member name="F:UModbus.Client.ModbusClient.MB_WRITE_FILE_RECORD">
             <summary>
             Стандартная modbus функция FC21 - зфписб массива записей в файл.
             </summary>
         </member>
-        <member name="F:UModbus.ModbusClient.MB_MASK_WRITE_REGISTER">
+        <member name="F:UModbus.Client.ModbusClient.MB_MASK_WRITE_REGISTER">
             <summary>
             Стандартная modbus функция FC22 - модификация значения регистра с помощью масок.
             </summary>
         </member>
-        <member name="F:UModbus.ModbusClient.MB_READWRITE_MULTIPLE_REGS">
+        <member name="F:UModbus.Client.ModbusClient.MB_READWRITE_MULTIPLE_REGS">
             <summary>
             Стандартная modbus функция FC23 - комбинация чтения и записи нескольких регистров в одной транзакции.
             </summary>
         </member>
-        <member name="F:UModbus.ModbusClient.MB_READ_FIFO_QUEUE">
+        <member name="F:UModbus.Client.ModbusClient.MB_READ_FIFO_QUEUE">
             <summary>
             Стандартная modbus функция FC24 - чтение содержимого очереди регистров в порядке очереди (FIFO).
             </summary>
         </member>
-        <member name="F:UModbus.ModbusClient.MB_READ_DEVICE_ID">
+        <member name="F:UModbus.Client.ModbusClient.MB_READ_DEVICE_ID">
             <summary>
             Стандартная modbus функция FC43 - чтение идентификатор устройства.
             </summary>
         </member>
-        <member name="F:UModbus.ModbusClient.MB_MEI_TYPE_CAN_OPEN">
-             <summary>
-             Стандартная modbus функция SF13 - подфункция функции FC43.
-             </summary>
-            public const byte MB_READ_DEVICE_ID_SUB      = 0x0E;
+        <member name="F:UModbus.Client.ModbusClient.MB_MEI_TYPE_CAN_OPEN">
+            <summary>
+            Стандартная modbus функция SF13 - подфункция функции FC43.
+            </summary>
         </member>
-        <member name="F:UModbus.ModbusClient.MB_MEI_TYPE_DEVICE_ID">
+        <member name="F:UModbus.Client.ModbusClient.MB_MEI_TYPE_DEVICE_ID">
             <summary>
             Стандартная modbus функция SF14 - подфункция функции FC43.
             </summary>
         </member>
-        <member name="F:UModbus.ModbusClient.MB_READ_ID_CODE_BASIC">
+        <member name="F:UModbus.Client.ModbusClient.MB_READ_ID_CODE_BASIC">
             <summary>
             Стандартная modbus функция SF01 - подфункция функции FC43.
             </summary>
         </member>
-        <member name="F:UModbus.ModbusClient.MB_READ_ID_CODE_REGULAR">
+        <member name="F:UModbus.Client.ModbusClient.MB_READ_ID_CODE_REGULAR">
             <summary>
             Стандартная modbus функция SF02 - подфункция функции FC43.
             </summary>
         </member>
-        <member name="F:UModbus.ModbusClient.MB_READ_ID_CODE_EXTENDED">
+        <member name="F:UModbus.Client.ModbusClient.MB_READ_ID_CODE_EXTENDED">
             <summary>
             Стандартная modbus функция SF03 - подфункция функции FC43.
             </summary>
         </member>
-        <member name="F:UModbus.ModbusClient.MB_READ_ID_CODE_SPECIFIC">
+        <member name="F:UModbus.Client.ModbusClient.MB_READ_ID_CODE_SPECIFIC">
             <summary>
             Стандартная modbus функция SF04 - подфункция функции FC43.
             </summary>
         </member>
-        <member name="F:UModbus.ModbusClient.MB_READ_ID_OBJECT_ID">
+        <member name="F:UModbus.Client.ModbusClient.MB_READ_ID_OBJECT_ID">
             <summary>
             Стандартная modbus функция SF00 - подфункция функции FC43.
             </summary>
         </member>
-        <member name="F:UModbus.ModbusClient.MB_DIAG_RETURN_QUERY_DATA">
+        <member name="F:UModbus.Client.ModbusClient.MB_DIAG_RETURN_QUERY_DATA">
             <summary>
             Стандартная modbus функция SF00 - подфункция функции FC08.
             Эхо-команда: данные переданные этой командой должны быть возвращены в ответном сообщении.
@@ -532,7 +531,7 @@
             RespDataField: echo ReqDataField.
             </summary>
         </member>
-        <member name="F:UModbus.ModbusClient.MB_DIAG_RESTART_COMM_OPTION">
+        <member name="F:UModbus.Client.ModbusClient.MB_DIAG_RESTART_COMM_OPTION">
             <summary>
             Стандартная modbus функция SF01 - подфункция функции FC08.
             Команда реинициализации подсистемы связи подчиненного устройства.
@@ -542,7 +541,7 @@
             RespDataField: echo ReqDataField.
             </summary>
         </member>
-        <member name="F:UModbus.ModbusClient.MB_DIAG_RETURN_DIAGNOSTIC_REGISTER">
+        <member name="F:UModbus.Client.ModbusClient.MB_DIAG_RETURN_DIAGNOSTIC_REGISTER">
             <summary>
             Стандартная modbus функция SF02 - подфункция функции FC08.
             Получение содержимого диагностического регистра подчиненного устройства.
@@ -550,7 +549,7 @@
             RespDataField: содержимого диагностического регистра
             </summary>
         </member>
-        <member name="F:UModbus.ModbusClient.MB_DIAG_CHANGE_ASCII_DELIMITER">
+        <member name="F:UModbus.Client.ModbusClient.MB_DIAG_CHANGE_ASCII_DELIMITER">
             <summary>
             Стандартная modbus функция SF03 - подфункция функции FC08.
             Установка символа разделителя сообщений
@@ -558,7 +557,7 @@
             RespDataField: echo ReqDataField.
             </summary>
         </member>
-        <member name="F:UModbus.ModbusClient.MB_DIAG_FORCE_LISTEN_ONLY_MODE">
+        <member name="F:UModbus.Client.ModbusClient.MB_DIAG_FORCE_LISTEN_ONLY_MODE">
             <summary>
             Стандартная modbus функция SF04 - подфункция функции FC08.
             Переводит подчиненное устройство в режим "только прослушивание" -
@@ -567,7 +566,7 @@
             RespDataField: ----
             </summary>
         </member>
-        <member name="F:UModbus.ModbusClient.MB_DIAG_CLEAR_COUNTERS_DIAG_REGS">
+        <member name="F:UModbus.Client.ModbusClient.MB_DIAG_CLEAR_COUNTERS_DIAG_REGS">
             <summary>
             Стандартная modbus функция SF10 - подфункция функции FC08.
             Очистка всех счетчиков и диагностического регистра.
@@ -575,7 +574,7 @@
             RespDataField: echo ReqDataField.
             </summary>
         </member>
-        <member name="F:UModbus.ModbusClient.MB_DIAG_RETURN_BUS_MESSAGE_COUNT">
+        <member name="F:UModbus.Client.ModbusClient.MB_DIAG_RETURN_BUS_MESSAGE_COUNT">
             <summary>
             Стандартная modbus функция SF11 - подфункция функции FC08.
             Запрос количества сообщений, обнаруженных подчиненным устройством.
@@ -583,7 +582,7 @@
             RespDataField: общее количество сообщений.
             </summary>
         </member>
-        <member name="F:UModbus.ModbusClient.MB_DIAG_RETURN_COMM_ERR_COUNT">
+        <member name="F:UModbus.Client.ModbusClient.MB_DIAG_RETURN_COMM_ERR_COUNT">
             <summary>
             Стандартная modbus функция SF12 - подфункция функции FC08.
             Запрос количества поврежденных сообщений, обнаруженных подчиненным устройством.
@@ -591,7 +590,7 @@
             RespDataField: количество запросов с некорректной контрольной суммой.
             </summary>
         </member>
-        <member name="F:UModbus.ModbusClient.MB_DIAG_RETURN_EXCEPT_ERR_COUNT">
+        <member name="F:UModbus.Client.ModbusClient.MB_DIAG_RETURN_EXCEPT_ERR_COUNT">
             <summary>
             Стандартная modbus функция SF13 - подфункция функции FC08.
             Запрос количества ответных сообщений об ошибке.
@@ -599,7 +598,7 @@
             RespDataField: количество сообщений об ошибке.
             </summary>
         </member>
-        <member name="F:UModbus.ModbusClient.MB_DIAG_RETURN_SLAVE_MESSAGE_COUNT">
+        <member name="F:UModbus.Client.ModbusClient.MB_DIAG_RETURN_SLAVE_MESSAGE_COUNT">
             <summary>
             Стандартная modbus функция SF14 - подфункция функции FC08.
             Запрос количества сообщений полученных подчиненным устройством.
@@ -607,7 +606,7 @@
             RespDataField: количество сообщений.
             </summary>
         </member>
-        <member name="F:UModbus.ModbusClient.MB_DIAG_RETURN_SLAVE_NORESP_COUNT">
+        <member name="F:UModbus.Client.ModbusClient.MB_DIAG_RETURN_SLAVE_NORESP_COUNT">
             <summary>
             Стандартная modbus функция SF15 - подфункция функции FC08.
             Запрос количества сообщений, на которые не был отправлен ответ.
@@ -615,7 +614,7 @@
             RespDataField: количество сообщений.
             </summary>
         </member>
-        <member name="F:UModbus.ModbusClient.MB_DIAG_RETURN_SLAVE_NAK_COUNT">
+        <member name="F:UModbus.Client.ModbusClient.MB_DIAG_RETURN_SLAVE_NAK_COUNT">
             <summary>
             Стандартная modbus функция SF16 - подфункция функции FC08.
             Запрос количества сообщений, на которые был потправлен ответ NAK.
@@ -623,7 +622,7 @@
             RespDataField: количество сообщений.
             </summary>
         </member>
-        <member name="F:UModbus.ModbusClient.MB_DIAG_RETURN_SLAVE_BUSY_COUNT">
+        <member name="F:UModbus.Client.ModbusClient.MB_DIAG_RETURN_SLAVE_BUSY_COUNT">
             <summary>
             Стандартная modbus функция SF17 - подфункция функции FC08.
             Запрос количества сообщений, на которые был потправлен ответ BUSY.
@@ -631,7 +630,7 @@
             RespDataField: количество сообщений.
             </summary>
         </member>
-        <member name="F:UModbus.ModbusClient.MB_DIAG_RETURN_BUS_CHAR_OVERRUN">
+        <member name="F:UModbus.Client.ModbusClient.MB_DIAG_RETURN_BUS_CHAR_OVERRUN">
             <summary>
             Стандартная modbus функция SF18 - подфункция функции FC08.
             Запрос количества сообщений, необработанных из-за переполнения.
@@ -639,7 +638,7 @@
             RespDataField: количество сообщений.
             </summary>
         </member>
-        <member name="F:UModbus.ModbusClient.MB_DIAG_CLEAR_OVERRUN_COUNTER_FLAG">
+        <member name="F:UModbus.Client.ModbusClient.MB_DIAG_CLEAR_OVERRUN_COUNTER_FLAG">
             <summary>
             Стандартная modbus функция SF20 - подфункция функции FC08.
             Очищистка счетчика ошибок переполнения и сброс флага ошибки.
@@ -647,32 +646,22 @@
             RespDataField: echo ReqDataField.
             </summary>
         </member>
-        <member name="T:UModbus.ModbusClient.TransferResponse">
+        <member name="T:UModbus.Client.ModbusClient.TransferResponse">
             <summary>
             Тип ответа на запрос.
             </summary>
         </member>
-        <member name="F:UModbus.ModbusClient.TransferResponse.Status">
+        <member name="F:UModbus.Client.ModbusClient.TransferResponse.Status">
             <summary>
             Статус ответа.
             </summary>
         </member>
-        <member name="F:UModbus.ModbusClient.TransferResponse.Data">
+        <member name="F:UModbus.Client.ModbusClient.TransferResponse.Data">
             <summary>
             Блок данных.
             </summary>
         </member>
-        <member name="F:UModbus.ModbusClient._SlaveAddress">
-            <summary>
-            Selected modbus-slave address.
-            </summary>
-        </member>
-        <member name="F:UModbus.ModbusClient._Timeout">
-            <summary>
-            Time during which should wait for a response.
-            </summary>
-        </member>
-        <member name="M:UModbus.ModbusClient.SaveToLogFile(System.String,System.Int32,System.Byte[])">
+        <member name="M:UModbus.Client.ModbusClient.SaveToLogFile(System.String,System.Int32,System.Byte[])">
             <summary>
             Дописывет HEX-представление массива байт в файл LogFileName.
             </summary>
@@ -680,7 +669,7 @@
             <param name="length">количество байт, которые следует записать в файл.</param>
             <param name="data">массив записываемых байт.</param>
         </member>
-        <member name="M:UModbus.ModbusClient.TransferPDU(System.Byte[])">
+        <member name="M:UModbus.Client.ModbusClient.TransferPDU(System.Byte[])">
             <summary>
             Отправляет PDU запроса через транспортный уровень, 
             определенный в конкретной реализации клиента
@@ -689,48 +678,48 @@
             <param name="data">Protocol Data Unit</param>
             <returns>Protocol Data Unit.</returns>
         </member>
-        <member name="M:UModbus.ModbusClient.#ctor">
+        <member name="M:UModbus.Client.ModbusClient.#ctor">
             <summary>
             Инициализирует новый экземпляр класса ModbusClient.
             </summary>
         </member>
-        <member name="P:UModbus.ModbusClient.SlaveAddress">
+        <member name="P:UModbus.Client.ModbusClient.SlaveAddress">
             <summary>
             Задает/возвращает modbus-адрес устройства в сети.
             </summary>
         </member>
-        <member name="P:UModbus.ModbusClient.Timeout">
+        <member name="P:UModbus.Client.ModbusClient.Timeout">
             <summary>
             Задает/возвращает время в течении которого следует ждать ответ от устройства в мс.
             </summary>
         </member>
-        <member name="P:UModbus.ModbusClient.LoggingEnable">
+        <member name="P:UModbus.Client.ModbusClient.LoggingEnable">
             <summary>
             Задает/возвращает разрешение записи данных запросов и ответов на них в файл.
             </summary>
         </member>
-        <member name="P:UModbus.ModbusClient.LogFileName">
+        <member name="P:UModbus.Client.ModbusClient.LogFileName">
             <summary>
             Задает/возвращает имя файла лога.
             </summary>
         </member>
-        <member name="P:UModbus.ModbusClient.IsConnected">
+        <member name="P:UModbus.Client.ModbusClient.IsConnected">
             <summary>
             Возвращает статус соединения транспортного уровня.
             </summary>
         </member>
-        <member name="M:UModbus.ModbusClient.Connect">
+        <member name="M:UModbus.Client.ModbusClient.Connect">
             <summary>
             Инициирует соединение транспортного уровня.
             </summary>
             <returns>статус соединения транспортного уровня.</returns>
         </member>
-        <member name="M:UModbus.ModbusClient.Disconnect">
+        <member name="M:UModbus.Client.ModbusClient.Disconnect">
             <summary>
             Закрывает соединение транспортного уровня.
             </summary>
         </member>
-        <member name="M:UModbus.ModbusClient.ReadCoils(System.UInt16,System.UInt16)">
+        <member name="M:UModbus.Client.ModbusClient.ReadCoils(System.UInt16,System.UInt16)">
             <summary>
             FC01 - чтение одного/нескольких флагов (ciols).
             </summary>
@@ -738,7 +727,7 @@
             <param name="count">количество считываемых флагов.</param>
             <returns>массив значений флагов.</returns>
         </member>
-        <member name="M:UModbus.ModbusClient.ReadDiscreteInputs(System.UInt16,System.UInt16)">
+        <member name="M:UModbus.Client.ModbusClient.ReadDiscreteInputs(System.UInt16,System.UInt16)">
             <summary>
             FC02 - чтение одного/нескольких флагов (discrete inputs).
             </summary>
@@ -746,7 +735,7 @@
             <param name="count">количество считываемых флагов.</param>
             <returns>массив значений флагов.</returns>
         </member>
-        <member name="M:UModbus.ModbusClient.ReadHoldingRegisters(System.UInt16,System.UInt16)">
+        <member name="M:UModbus.Client.ModbusClient.ReadHoldingRegisters(System.UInt16,System.UInt16)">
             <summary>
             FC03 - чтение одного/нескольких регистров хранения.
             </summary>
@@ -754,7 +743,7 @@
             <param name="count">количество считываемых регистров.</param>
             <returns>массив значений регистров.</returns>
         </member>
-        <member name="M:UModbus.ModbusClient.ReadInputRegisters(System.UInt16,System.UInt16)">
+        <member name="M:UModbus.Client.ModbusClient.ReadInputRegisters(System.UInt16,System.UInt16)">
             <summary>
             FC04 - чтение одного/нескольких входных регистров.
             </summary>
@@ -762,7 +751,7 @@
             <param name="count">количество считываемых регистров.</param>
             <returns>массив значений регистров.</returns>
         </member>
-        <member name="M:UModbus.ModbusClient.WriteSingleCoil(System.UInt16,System.Boolean)">
+        <member name="M:UModbus.Client.ModbusClient.WriteSingleCoil(System.UInt16,System.Boolean)">
             <summary>
             FC05 - запись значения одного флага (coil).
             </summary>
@@ -770,7 +759,7 @@
             <param name="coil">значение записываемого флага.</param>
             <returns>количество записаных флагов.</returns>
         </member>
-        <member name="M:UModbus.ModbusClient.WriteSingleRegister(System.UInt16,System.UInt16)">
+        <member name="M:UModbus.Client.ModbusClient.WriteSingleRegister(System.UInt16,System.UInt16)">
             <summary>
             FC06 - запись значения одного регистра хранения.
             </summary>
@@ -778,13 +767,13 @@
             <param name="register">значение записываемого регистра.</param>
             <returns>количество записаных регистров.</returns>
         </member>
-        <member name="M:UModbus.ModbusClient.ReadExceptionStatus">
+        <member name="M:UModbus.Client.ModbusClient.ReadExceptionStatus">
             <summary>
             FC07 - чтение кода ошибки.
             </summary>
             <returns>код ошибки от 0 до 255.</returns>
         </member>
-        <member name="M:UModbus.ModbusClient.Diagnostics(System.UInt16,System.Byte[])">
+        <member name="M:UModbus.Client.ModbusClient.Diagnostics(System.UInt16,System.Byte[])">
             <summary>
             FC08 - диагностика починенного устройства.
             </summary>
@@ -792,19 +781,19 @@
             <param name="data">данные (в зависимости от подфункции).</param>
             <returns>данные (в зависимости от подфункции).</returns>
         </member>
-        <member name="M:UModbus.ModbusClient.GetCommEventCounter">
+        <member name="M:UModbus.Client.ModbusClient.GetCommEventCounter">
             <summary>
             FC11 - чтение слова состояния и количества событий починенного устройства.
             </summary>
             <returns>слово состояния и количество событий.</returns>
         </member>
-        <member name="M:UModbus.ModbusClient.GetCommEventLog">
+        <member name="M:UModbus.Client.ModbusClient.GetCommEventLog">
             <summary>
             FC12 - чтение записей журнала событий починенного устройства.
             </summary>
             <returns>до 64-х записей.</returns>
         </member>
-        <member name="M:UModbus.ModbusClient.WriteMultipleCoils(System.UInt16,System.Boolean[])">
+        <member name="M:UModbus.Client.ModbusClient.WriteMultipleCoils(System.UInt16,System.Boolean[])">
             <summary>
             FC15 - запись нескольких значений флагов (coils).
             </summary>
@@ -812,7 +801,7 @@
             <param name="coils">значения записываемых флагов.</param>
             <returns>количество записаных флагов.</returns>
         </member>
-        <member name="M:UModbus.ModbusClient.WriteMultipleRegisters(System.UInt16,System.UInt16[])">
+        <member name="M:UModbus.Client.ModbusClient.WriteMultipleRegisters(System.UInt16,System.UInt16[])">
             <summary>
             FC16 - запись нескольких значений регистров хранения.
             </summary>
@@ -820,27 +809,27 @@
             <param name="registers">значения записываемых регистров.</param>
             <returns>количество записаных регистров.</returns>
         </member>
-        <member name="M:UModbus.ModbusClient.ReportSlaveId">
+        <member name="M:UModbus.Client.ModbusClient.ReportSlaveId">
             <summary>
             FC17 - чтение описания типа, текущего состояния и другой информации об устройстве.
             </summary>
             <returns>данные, структура которых специфична для конкретного устройства.</returns>
         </member>
-        <member name="M:UModbus.ModbusClient.ReadFileRecord(UModbus.FileRecordSubReq[])">
+        <member name="M:UModbus.Client.ModbusClient.ReadFileRecord(UModbus.Client.FileRecordSubReq[])">
             <summary>
             FC20 - чтение массива записей из файла.
             </summary>
             <param name="SubRequests">массив под-запросов(файл,запись и ее длина).</param>
             <returns>значения рочитанных записей.</returns>
         </member>
-        <member name="M:UModbus.ModbusClient.WriteFileRecord(UModbus.FileRecord[])">
+        <member name="M:UModbus.Client.ModbusClient.WriteFileRecord(UModbus.Client.FileRecord[])">
             <summary>
             FC21 - запись массива записей в файл.
             </summary>
             <param name="records">массив записей.</param>
             <returns>количество записанных записей.</returns>
         </member>
-        <member name="M:UModbus.ModbusClient.MaskWriteRegister(System.UInt16,System.UInt16,System.UInt16)">
+        <member name="M:UModbus.Client.ModbusClient.MaskWriteRegister(System.UInt16,System.UInt16,System.UInt16)">
             <summary>
             FC22 - модификация значения регистра хранения.
             reg = (reg &amp; and) | (or &amp; ~and).
@@ -850,7 +839,7 @@
             <param name="or">маска "ИЛИ".</param>
             <returns>количество модифицированных регистров (1/0).</returns>
         </member>
-        <member name="M:UModbus.ModbusClient.ReadWriteMultipleRegisters(System.UInt16,System.UInt16,System.UInt16,System.UInt16[])">
+        <member name="M:UModbus.Client.ModbusClient.ReadWriteMultipleRegisters(System.UInt16,System.UInt16,System.UInt16,System.UInt16[])">
             <summary>
             FC23 - комбинация чтения и записи нескольких регистров в одной транзакции.
             </summary>
@@ -860,26 +849,26 @@
             <param name="WriteData">значения записываемых регистров.</param>
             <returns>массив считанных значений регистров.</returns>
         </member>
-        <member name="M:UModbus.ModbusClient.ReadFifoQueue(System.UInt16)">
+        <member name="M:UModbus.Client.ModbusClient.ReadFifoQueue(System.UInt16)">
             <summary>
             FC24 - чтение содержимого очереди регистров в порядке очереди (FIFO).
             </summary>
             <param name="pointer">счетчик очереди.</param>
             <returns>данные в очереди (до 32 регистров).</returns>
         </member>
-        <member name="M:UModbus.ModbusClient.ReadDeviceInfoBasic">
+        <member name="M:UModbus.Client.ModbusClient.ReadDeviceInfoBasic">
             <summary>
             FC43/01 - чтение базовой информации об устройстве.
             </summary>
             <returns>массив строк описания.</returns>
         </member>
-        <member name="M:UModbus.ModbusClient.ReadDeviceInfoComplete">
+        <member name="M:UModbus.Client.ModbusClient.ReadDeviceInfoComplete">
             <summary>
             FC43/02 - чтение полной информации об устройстве.
             </summary>
             <returns>массив строк описания.</returns>
         </member>
-        <member name="M:UModbus.ModbusClient.UserRequest(System.Byte,System.Byte[])">
+        <member name="M:UModbus.Client.ModbusClient.UserRequest(System.Byte,System.Byte[])">
             <summary>
             Пользовательский запрос с функцией func.
             </summary>
@@ -887,34 +876,34 @@
             <param name="parameters">параметры, определенные структурой пользовательской функции.</param>
             <returns>блок "сырых" данных.</returns>
         </member>
-        <member name="T:UModbus.ModbusSerialClient">
+        <member name="T:UModbus.Client.ModbusSerialClient">
             <summary>
             Базовый класс Modbus-клиента. Через последовательный порт.
             </summary>
         </member>
-        <member name="F:UModbus.ModbusSerialClient._Uart">
+        <member name="F:UModbus.Client.ModbusSerialClient._Uart">
             <summary>
-            Serial port.
+            Последовательный порт, через который устанавливается связь с подчиненным Modbus-устройством.
             </summary>
         </member>
-        <member name="F:UModbus.ModbusSerialClient._CorrectCrc">
+        <member name="F:UModbus.Client.ModbusSerialClient._CorrectCrc">
             <summary>
-            Correct schecksum value.
+            Корректное значение контрольной суммы для заданного протокола.
             </summary>
         </member>
-        <member name="F:UModbus.ModbusSerialClient._CrcLength">
+        <member name="F:UModbus.Client.ModbusSerialClient._CrcLength">
             <summary>
-            Checksum length in bytes.
+            Длина контрольной суммы для заданного протокола в байтах.
             </summary>
         </member>
-        <member name="M:UModbus.ModbusSerialClient.CheckSum(System.Byte[])">
+        <member name="M:UModbus.Client.ModbusSerialClient.CheckSum(System.Byte[])">
             <summary>
             Вычисляет контрольную сумму пакета.
             </summary>
             <param name="data">пакт данных.</param>
             <returns>16битная контрольная сумма.</returns>
         </member>
-        <member name="M:UModbus.ModbusSerialClient.TransferADU(System.Byte[])">
+        <member name="M:UModbus.Client.ModbusSerialClient.TransferADU(System.Byte[])">
             <summary>
             Отправляет ADU запроса через канальный уровень, 
             определенный в конкретной реализации клиента
@@ -923,71 +912,81 @@
             <param name="data">Application Data Unit.</param>
             <returns>Application Data Unit.</returns>
         </member>
-        <member name="M:UModbus.ModbusSerialClient.TransferPDU(System.Byte[])">
+        <member name="M:UModbus.Client.ModbusSerialClient.TransferPDU(System.Byte[])">
             <summary>
             Реализация приема/передачи пакетов транспортного уровня.
             </summary>
             <param name="data">отправляемый пакет.</param>
             <returns>возвращаемый ответ.</returns>
         </member>
-        <member name="M:UModbus.ModbusSerialClient.#ctor(System.String)">
+        <member name="M:UModbus.Client.ModbusSerialClient.#ctor(System.String)">
             <summary>
             Инициализирует новый экземпляр класса ModbusSerialClient
             </summary>
-            <param name="PhysicalAddress">строковое задание физического адреса например: "COM1:9600:8N1"</param>
+            <param name="PhysicalAddress">
+            Строковое задание физического адреса например: "COM1:9600:8N1".
+            При некорректном значении физического адреса будет использовано 
+            значение по умолчанию COM1:9600:8N1.
+            Значение DataBits фиксировано и равно 8, другие значения считаются ошибкой.
+            </param>
         </member>
-        <member name="P:UModbus.ModbusSerialClient.Port">
+        <member name="P:UModbus.Client.ModbusSerialClient.Port">
             <summary>
             Задает/возвращает имя последовательного порта.
             </summary>
         </member>
-        <member name="P:UModbus.ModbusSerialClient.Baudrate">
+        <member name="P:UModbus.Client.ModbusSerialClient.Baudrate">
             <summary>
             Задает/возвращает скорсть последовательного порта.
             </summary>
         </member>
-        <member name="P:UModbus.ModbusSerialClient.Parity">
+        <member name="P:UModbus.Client.ModbusSerialClient.Parity">
             <summary>
             Задает/возвращает контроль четности последовательного порта.
             </summary>
         </member>
-        <member name="P:UModbus.ModbusSerialClient.StopBits">
+        <member name="P:UModbus.Client.ModbusSerialClient.StopBits">
             <summary>
             Задает/возвращает количество стоп-битов последовательного порта.
             </summary>
         </member>
-        <member name="P:UModbus.ModbusSerialClient.IsConnected">
+        <member name="P:UModbus.Client.ModbusSerialClient.IsConnected">
             <summary>
             Возвращает статус соединения по последовательному порту.
             </summary>
         </member>
-        <member name="M:UModbus.ModbusSerialClient.Connect">
+        <member name="M:UModbus.Client.ModbusSerialClient.Connect">
             <summary>
             Устанавливает соединение по последовательному порту.
             </summary>
             <returns>статус соединения по последовательному порту.</returns>
         </member>
-        <member name="M:UModbus.ModbusSerialClient.Disconnect">
+        <member name="M:UModbus.Client.ModbusSerialClient.Disconnect">
             <summary>
             Закрывает соединение по последовательному порту.
             </summary>
         </member>
-        <member name="T:UModbus.ModbusIpClient">
+        <member name="T:UModbus.Client.ModbusIpClient">
             <summary>
             Базовый класс Modbus-клиента. Через Ethernet/IP.
             </summary>
         </member>
-        <member name="F:UModbus.ModbusIpClient._IpAddress">
+        <member name="F:UModbus.Client.ModbusIpClient.IP_HEADER_LENGTH">
             <summary>
-            Destination IP address.
+            Длина заголовка Modbus пакета внутри TCP/UDP пакета
             </summary>
         </member>
-        <member name="F:UModbus.ModbusIpClient._Port">
+        <member name="F:UModbus.Client.ModbusIpClient.IP_PROTOCOL">
             <summary>
-            Destination TCP/UDP port.
+            Идентификатор протокола Modbus поверх TCP/UDP
             </summary>
         </member>
-        <member name="M:UModbus.ModbusIpClient.TransferADU(System.Byte[])">
+        <member name="F:UModbus.Client.ModbusIpClient._TransactionId">
+            <summary>
+            Идентификатор транзакции. Инкрементируется с каждым запросом.
+            </summary>
+        </member>
+        <member name="M:UModbus.Client.ModbusIpClient.TransferADU(System.Byte[])">
             <summary>
             Отправляет ADU запроса через канальный уровень, 
             определенный в конкретной реализации клиента
@@ -996,42 +995,61 @@
             <param name="data">Application Data Unit.</param>
             <returns>Application Data Unit.</returns>
         </member>
-        <member name="M:UModbus.ModbusIpClient.TransferPDU(System.Byte[])">
+        <member name="M:UModbus.Client.ModbusIpClient.TransferPDU(System.Byte[])">
             <summary>
             Реализация приема/передачи пакетов транспортного уровня.
             </summary>
             <param name="data">отправляемый пакет.</param>
             <returns>возвращаемый ответ.</returns>
         </member>
-        <member name="M:UModbus.ModbusIpClient.#ctor(System.String)">
+        <member name="M:UModbus.Client.ModbusIpClient.#ctor(System.String)">
             <summary>
             Инициализирует новый экземпляр класса ModbusIpClient
             </summary>
-            <param name="PhysicalAddress">строковое задание физического адреса например: "192.168.1.100:502"</param>
+            <param name="PhysicalAddress">
+            Строковое задание физического адреса например: "192.168.1.100:502"
+            При некорректном значении физического адреса будет использовано 
+            значение по умолчанию 127.0.0.1:502
+            </param>
         </member>
-        <member name="P:UModbus.ModbusIpClient.IpAddress">
+        <member name="P:UModbus.Client.ModbusIpClient.IpAddress">
             <summary>
             Задает/возвращает IP адрес устройства.
             </summary>
         </member>
-        <member name="P:UModbus.ModbusIpClient.Port">
+        <member name="P:UModbus.Client.ModbusIpClient.Port">
             <summary>
             Задает/возвращает TCP/IP или UDP/IP порт устройства.
             </summary>
         </member>
-        <member name="T:UModbus.ModbusRtuClient">
+        <member name="T:UModbus.Client.ModbusRtuClient">
             <summary>
             Реализует методы для работы с ModbusRTU устройствами через последовательный порт.
             </summary>
         </member>
-        <member name="M:UModbus.ModbusRtuClient.CheckSum(System.Byte[])">
+        <member name="F:UModbus.Client.ModbusRtuClient.CRC16_POLYNOM">
+            <summary>
+            Полином алгоритма контрольной суммы CRC16.
+            </summary>
+        </member>
+        <member name="F:UModbus.Client.ModbusRtuClient.CRC16_INITIAL">
+            <summary>
+            Начальное значение вычисляемой контрольной суммы CRC16.
+            </summary>
+        </member>
+        <member name="F:UModbus.Client.ModbusRtuClient.RESP_BUFFER_SIZE">
+            <summary>
+            Размер входного буффера для приема ответа от подчиненного Modbus устройства.
+            </summary>
+        </member>
+        <member name="M:UModbus.Client.ModbusRtuClient.CheckSum(System.Byte[])">
             <summary>
             Реализация контрольной вычисления суммы CRC16.
             </summary>
             <param name="data">пакет данных.</param>
-            <returns>16битная контрольная сумма.</returns>
+            <returns>16-битная контрольная сумма.</returns>
         </member>
-        <member name="M:UModbus.ModbusRtuClient.TransferADU(System.Byte[])">
+        <member name="M:UModbus.Client.ModbusRtuClient.TransferADU(System.Byte[])">
             <summary>
             Отправляет ADU запроса через последовательный порт,
             и возвращает ADU ответного пакета.
@@ -1039,101 +1057,173 @@
             <param name="data">Application Data Unit.</param>
             <returns>Application Data Unit.</returns>
         </member>
-        <member name="M:UModbus.ModbusRtuClient.#ctor(System.String)">
+        <member name="M:UModbus.Client.ModbusRtuClient.#ctor(System.String)">
             <summary>
             Инициализирует новый экземпляр класса ModbusRtuClient
             </summary>
-            <param name="PhysicalAddress">строковое задание физического адреса например: "COM1:9600:8N1"</param>
+            <param name="PhysicalAddress">
+            Строковое задание физического адреса например: "COM1:9600:8N1".
+            При некорректном значении физического адреса будет использовано 
+            значение по умолчанию COM1:9600:8N1.
+            Значение DataBits фиксировано и равно 8, другие значения считаются ошибкой.
+            </param>
         </member>
-        <member name="T:UModbus.ModbusAsciiClient">
+        <member name="T:UModbus.Client.ModbusAsciiClient">
             <summary>
             Реализует методы для работы с ModbusASCII устройствами через последовательный порт.
             </summary>
         </member>
-        <member name="M:UModbus.ModbusAsciiClient.CheckSum(System.Byte[])">
+        <member name="F:UModbus.Client.ModbusAsciiClient.ASCII_START_SIZE">
+            <summary>
+            Размер стартовой последовательности в байтах.
+            </summary>
+        </member>
+        <member name="F:UModbus.Client.ModbusAsciiClient.ASCII_BYTE_SIZE">
+            <summary>
+            Размер в байтах одного закодированного байта.
+            </summary>
+        </member>
+        <member name="F:UModbus.Client.ModbusAsciiClient.ASCII_STOP_SIZE">
+            <summary>
+            Размер стоповой последовательности в байтах.
+            </summary>
+        </member>
+        <member name="F:UModbus.Client.ModbusAsciiClient.ASCII_START_MARK">
+            <summary>
+            Маркер начала пакета.
+            </summary>
+        </member>
+        <member name="F:UModbus.Client.ModbusAsciiClient.ASCII_STOP1_MARK">
+            <summary>
+            Маркер конца пакета.
+            </summary>
+        </member>
+        <member name="F:UModbus.Client.ModbusAsciiClient.RESP_BUFFER_SIZE">
+            <summary>
+            Размер входного буффера для приема ответа от подчиненного Modbus устройства.
+            </summary>
+        </member>
+        <member name="M:UModbus.Client.ModbusAsciiClient.TetradeEncode(System.Byte)">
+            <summary>
+            Преобразование младшей тетрады входного байта tetrade в его ASCII изображение.
+            </summary>
+            <param name="tetrade">Тетрада байта, которую неоходимо закодировать.</param>
+            <returns>Код символа ASCII, соответствующий входным данным.</returns>
+        </member>
+        <member name="M:UModbus.Client.ModbusAsciiClient.TetradeDecode(System.Byte)">
+            <summary>
+            Преобразование ASCII изображения терады закодированного байта в значение тетрады.
+            </summary>
+            <param name="tetrade">Код ASCII символа, тетрады закодированного байта.</param>
+            <returns>значение тетрады, соответствующее входным данным.</returns>
+        </member>
+        <member name="M:UModbus.Client.ModbusAsciiClient.CheckSum(System.Byte[])">
             <summary>
             Реализация контрольной вычисления суммы CRC8.
             </summary>
             <param name="data">пакет данных.</param>
             <returns>8битная контрольная сумма.</returns>
         </member>
-        <member name="M:UModbus.ModbusAsciiClient.TransferADU(System.Byte[])">
+        <member name="M:UModbus.Client.ModbusAsciiClient.TransferADU(System.Byte[])">
             <summary>
             Отправляет ADU запроса через последовательный порт, и возвращает ADU ответного пакета.
             </summary>
             <param name="data">Application Data Unit.</param>
             <returns>Application Data Unit.</returns>
         </member>
-        <member name="M:UModbus.ModbusAsciiClient.#ctor(System.String)">
+        <member name="M:UModbus.Client.ModbusAsciiClient.#ctor(System.String)">
             <summary>
             Инициализирует новый экземпляр класса ModbusRtuClient
             </summary>
-            <param name="PhysicalAddress">строковое задание физического адреса например: "COM1:9600:8N1"</param>
+            <param name="PhysicalAddress">
+            Строковое задание физического адреса например: "COM1:9600:8N1".
+            При некорректном значении физического адреса будет использовано 
+            значение по умолчанию COM1:9600:8N1.
+            Значение DataBits фиксировано и равно 8, другие значения считаются ошибкой.
+            </param>
         </member>
-        <member name="T:UModbus.ModbusTcpClient">
+        <member name="T:UModbus.Client.ModbusTcpClient">
             <summary>
             Реализует методы для работы с ModbusTCP устройствами через TCP/IP стек.
             </summary>
         </member>
-        <member name="M:UModbus.ModbusTcpClient.TransferADU(System.Byte[])">
+        <member name="F:UModbus.Client.ModbusTcpClient.RESP_BUFFER_SIZE">
+            <summary>
+            Размер входного буффера для приема ответа от подчиненного Modbus устройства.
+            </summary>
+        </member>
+        <member name="M:UModbus.Client.ModbusTcpClient.TransferADU(System.Byte[])">
             <summary>
             Отправляет ADU запроса через TCP/IP стек, и возвращает ADU ответного пакета.
             </summary>
             <param name="data">Application Data Unit.</param>
             <returns>Application Data Unit.</returns>
         </member>
-        <member name="M:UModbus.ModbusTcpClient.#ctor(System.String)">
+        <member name="M:UModbus.Client.ModbusTcpClient.#ctor(System.String)">
             <summary>
             Инициализирует новый экземпляр класса ModbusTcpClient
             </summary>
-            <param name="PhysicalAddress">строковое задание физического адреса например: "192.168.1.100:502"</param>
+            <param name="PhysicalAddress">
+            Строковое задание физического адреса например: "192.168.1.100:502"
+            При некорректном значении физического адреса будет использовано 
+            значение по умолчанию 127.0.0.1:502
+            </param>
         </member>
-        <member name="P:UModbus.ModbusTcpClient.IsConnected">
+        <member name="P:UModbus.Client.ModbusTcpClient.IsConnected">
             <summary>
             Возвращает статус TCP соединения.
             </summary>
         </member>
-        <member name="M:UModbus.ModbusTcpClient.Connect">
+        <member name="M:UModbus.Client.ModbusTcpClient.Connect">
             <summary>
             Устанавливает TCP соединение с устройством по указанному IP адресу.
             </summary>
             <returns>статус соединения.</returns>
         </member>
-        <member name="M:UModbus.ModbusTcpClient.Disconnect">
+        <member name="M:UModbus.Client.ModbusTcpClient.Disconnect">
             <summary>
             Закрывает TCP соединение.
             </summary>
         </member>
-        <member name="T:UModbus.ModbusUdpClient">
+        <member name="T:UModbus.Client.ModbusUdpClient">
             <summary>
             Реализует методы для работы с ModbusUDP устройствами через UDP/IP стек.
             </summary>
         </member>
-        <member name="M:UModbus.ModbusUdpClient.TransferADU(System.Byte[])">
+        <member name="F:UModbus.Client.ModbusUdpClient.RESP_BUFFER_SIZE">
+            <summary>
+            Размер входного буффера для приема ответа от подчиненного Modbus устройства.
+            </summary>
+        </member>
+        <member name="M:UModbus.Client.ModbusUdpClient.TransferADU(System.Byte[])">
             <summary>
             Отправляет ADU запроса через UDP/IP стек, и возвращает ADU ответного пакета.
             </summary>
             <param name="data">Application Data Unit.</param>
             <returns>Application Data Unit.</returns>
         </member>
-        <member name="M:UModbus.ModbusUdpClient.#ctor(System.String)">
+        <member name="M:UModbus.Client.ModbusUdpClient.#ctor(System.String)">
             <summary>
             Инициализирует новый экземпляр класса ModbusUdpClient
             </summary>
-            <param name="PhysicalAddress">строковое задание физического адреса например: "192.168.1.100:502"</param>
+            <param name="PhysicalAddress">
+            Строковое задание физического адреса например: "192.168.1.100:502"
+            При некорректном значении физического адреса будет использовано 
+            значение по умолчанию 127.0.0.1:502
+            </param>
         </member>
-        <member name="P:UModbus.ModbusUdpClient.IsConnected">
+        <member name="P:UModbus.Client.ModbusUdpClient.IsConnected">
             <summary>
             Возвращает статус UDP соединения.
             </summary>
         </member>
-        <member name="M:UModbus.ModbusUdpClient.Connect">
+        <member name="M:UModbus.Client.ModbusUdpClient.Connect">
             <summary>
             Устанавливает UDP соединение с устройством по указанному IP адресу.
             </summary>
             <returns>статус соединения.</returns>
         </member>
-        <member name="M:UModbus.ModbusUdpClient.Disconnect">
+        <member name="M:UModbus.Client.ModbusUdpClient.Disconnect">
             <summary>
             Закрывает UDP соединение.
             </summary>
