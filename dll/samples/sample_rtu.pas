@@ -1,10 +1,10 @@
-﻿{$reference UModbus.dll}
+﻿{$reference ..\bin\x86_x64\UModbus.Client.dll}
 
 
 uses
   System,
   System.Text,
-  UModbus;
+  UModbus.Client;
 
 
 begin

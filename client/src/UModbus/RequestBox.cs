@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -24,7 +24,6 @@ namespace UModbus
             _Func.Font             = new Font("Consolas", 10, FontStyle.Regular, GraphicsUnit.Point);
             _Func.ContextMenuStrip = new ContextMenuStrip();
             _Func.TextAlign        = HorizontalAlignment.Center;
-            //_Func.BackColor        = Color.Pink;
             _Func.MaxLength        = 2;
             _Func.KeyPress        += FuncKeyPress;
             _Func.TextChanged     += FuncTextChanged;
@@ -37,7 +36,6 @@ namespace UModbus
             _Params.Anchor           = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
             _Params.Font             = new Font("Consolas", 10, FontStyle.Regular, GraphicsUnit.Point);
             _Params.ContextMenuStrip = new ContextMenuStrip();
-            //_Params.BackColor        = Color.Salmon;
             _Params.KeyPress        += ParamsKeyPress;
             _Params.TextChanged     += ParamsTextChanged;
             Controls.Add(_Params);
@@ -48,7 +46,7 @@ namespace UModbus
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
-            e.Graphics.DrawRectangle(Pens.Gray, new Rectangle(0, 0, Width - 1, Height - 1));
+            e.Graphics.DrawRectangle(Pens.Gray, new Rectangle(0, 0, Width-1, Height-1));
             int x = _Func.Left + _Func.Width;
             e.Graphics.DrawLine(Pens.Gray, x, 1, x, Height);
         }
@@ -80,10 +78,7 @@ namespace UModbus
             return "0123456789ABCDEF\b".IndexOf(e.KeyChar) == -1;
         }
 
-        private void FuncKeyPress(object sender, KeyPressEventArgs e)
-        {
-            e.Handled = HandleHexSysmbol(e);
-        }
+        private void FuncKeyPress(object sender, KeyPressEventArgs e) => e.Handled = HandleHexSysmbol(e);
 
         private void ParamsKeyPress(object sender, KeyPressEventArgs e)
         {
@@ -186,7 +181,7 @@ namespace UModbus
             if (_Params.BackColor == Color.LightPink)
             {
                 _Params.BackColor = Color.White;
-                BackColor = Color.White;
+                BackColor         = Color.White;
             }
         }
         #endregion

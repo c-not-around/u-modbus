@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Drawing;
 using System.Windows.Forms;
-using Modbus;
+using UModbus.Client;
 
 
 namespace UModbus
@@ -12,13 +12,13 @@ namespace UModbus
     {
         #region Fields
         private ModbusClient Client;
-        private bool WaitResponse = false;
-        private bool ClosingFlag  = false;
-        private byte function;
-        private byte[] param;
-        private byte StartAddress;
-        private byte StopAddress;
-        private bool Aborting;
+        private bool         WaitResponse = false;
+        private bool         ClosingFlag  = false;
+        private byte         function;
+        private byte[]       param;
+        private byte         StartAddress;
+        private byte         StopAddress;
+        private bool         Aborting;
         #endregion
 
         #region Form
@@ -127,7 +127,7 @@ namespace UModbus
                 }
                 else
                 {
-                    MessageBox.Show("begin address less or equal end address!", "Bus Scan", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("Begin address less or equal end address!", "Bus Scan", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
         }

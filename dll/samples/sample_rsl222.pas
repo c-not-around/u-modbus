@@ -1,4 +1,4 @@
-﻿{$reference UModbus.dll}
+﻿{$reference ..\bin\x86_x64\UModbus.Client.dll}
 
 
 uses
@@ -6,7 +6,7 @@ uses
   System.IO,
   System.Threading,
   System.Text,
-  UModbus;
+  UModbus.Client;
 
 
 const

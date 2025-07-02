@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Drawing;
 using System.Windows.Forms;
@@ -19,19 +19,30 @@ namespace UModbus
             var _LogMenuCopy    = new ToolStripMenuItem();
             _LogMenuCopy.Text   = "Copy";
             _LogMenuCopy.Image  = Properties.Resources.copy;
-            _LogMenuCopy.Click += LogMenuCopyClick;
+            _LogMenuCopy.Click += (sender, e) => _Log.Copy();
 
-            var _LogMenuSave    = new ToolStripMenuItem();
+			var _LogMenuClear   = new ToolStripMenuItem();
+			_LogMenuClear.Text  = "Clear";
+			_LogMenuClear.Image = Properties.Resources.clear;
+			_LogMenuClear.Click += (sender, e) => _Log.Clear();
+
+			var _LogMenuSave    = new ToolStripMenuItem();
             _LogMenuSave.Text   = "Save";
             _LogMenuSave.Image  = Properties.Resources.save;
-            _LogMenuSave.Click += LogMenuSaveClick;
+			_LogMenuSave.Click += (sender, e) =>
+			{
+				SaveFileDialog dialog = new SaveFileDialog();
+				dialog.Filter = "Plain text file (*.txt)|*.txt|Log file (*.log)|*.log";
+				dialog.FilterIndex = 1;
+				dialog.FileName = DateTime.Now.ToString("yyyyMMdd-HHmmss.lo\\g");
 
-            var _LogMenuClear   = new ToolStripMenuItem();
-            _LogMenuClear.Text  = "Clear";
-            _LogMenuClear.Image = Properties.Resources.clear;
-            _LogMenuClear.Click += LogMenuClearClick;
+				if (dialog.ShowDialog() == DialogResult.OK)
+				{
+					File.WriteAllText(dialog.FileName, _Log.Text);
+				}
+			};
 
-            _LogMenu = new ContextMenuStrip();
+			_LogMenu = new ContextMenuStrip();
             _LogMenu.Items.AddRange(new ToolStripItem[] 
             {
                 _LogMenuCopy,
@@ -62,44 +73,17 @@ namespace UModbus
         protected override void OnSizeChanged(EventArgs e)
         {
             base.OnSizeChanged(e);
-            _Log.Size = new Size(Width - 2, Height - 2);
-        }
-
-        private void LogMenuClearClick(object sender, EventArgs e)
-        {
-            _Log.Clear();
-        }
-
-        private void LogMenuCopyClick(object sender, EventArgs e)
-        {
-            _Log.Copy();
-        }
-
-        private void LogMenuSaveClick(object sender, EventArgs e)
-        {
-            SaveFileDialog dialog = new SaveFileDialog();
-            dialog.Filter = "Plain text file (*.txt)|*.txt|Log file (*.log)|*.log";
-            dialog.FilterIndex = 1;
-            dialog.FileName = DateTime.Now.ToString("yyyyMMdd-HHmmss.lo\\g");
-
-            if (dialog.ShowDialog() == DialogResult.OK)
-            {
-                File.WriteAllText(dialog.FileName, _Log.Text);
-            }
+            _Log.Size = new Size(Width-2, Height-2);
         }
         #endregion
 
         #region Public
         public new Size Size
         {
-            get
-            {
-                return base.Size;
-            }
-
+			get => base.Size;
             set
             {
-                _Log.Size = new Size(value.Width - 2, value.Height - 2);
+                _Log.Size = new Size(value.Width-2, value.Height-2);
                 base.Size = value;
             }
         }

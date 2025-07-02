@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
@@ -51,38 +51,26 @@ namespace UModbus
         #endregion
 
         #region Fields
-        private bool   _Enable;
         private byte[] _Value;
         #endregion
 
         #region Ctors
         public ModbusData()
         {
-            _Enable = true;
+            
         }
         #endregion
 
         #region Properties
         public ModbusDataType Type
         {
-            get
-            {
-                return _Type;
-            }
-
-            set
-            {
-                _Type = Enum.IsDefined(typeof(ModbusDataType), value) ? value : ModbusDataType.Coil;
-            }
+            get => _Type;
+            set => _Type = Enum.IsDefined(typeof(ModbusDataType), value) ? value : ModbusDataType.Coil;
         } ModbusDataType _Type;
 
         public ModbusDataFormat Format
         {
-            get
-            {
-                return _Format;
-            }
-
+            get => _Format;
             set
             {
                 bool IsValidEnumValue   = Enum.IsDefined(typeof(ModbusDataFormat), value);
@@ -109,37 +97,24 @@ namespace UModbus
 
         public int[] ByteOrder
         {
-            get
-            {
-                return _ByteOrder;
-            }
-
-            set
-            {
-                _ByteOrder = CheckByteOrder(value) ? value : DefaultByteOrder();
-            }
+            get => _ByteOrder;
+            set => _ByteOrder = CheckByteOrder(value) ? value : DefaultByteOrder();
         } int[] _ByteOrder;
 
         public ushort Address { get; set; }
 
         public string Description { get; set; }
+
+		[JsonIgnore]
+		public bool Enable { get; set; }
         #endregion
 
         #region Methods
-        public bool IsWord()
-        {
-            return ((byte)_Type & IS_WORD) == IS_WORD;
-        }
+        public bool IsWord() => ((byte)_Type & IS_WORD) == IS_WORD;
 
-        public bool IsWriteable()
-        {
-            return ((byte)_Type & IS_WRITABLE) == IS_WRITABLE;
-        }
+        public bool IsWriteable() => ((byte)_Type & IS_WRITABLE) == IS_WRITABLE;
 
-        public int Length()
-        {
-            return IsWord() ? ((byte)_Format & 0x70) >> 3 : 1;
-        }
+        public int Length() => IsWord() ? ((byte)_Format & 0x70) >> 3 : 1;
 
         public string OrderToString()
         {
@@ -160,14 +135,11 @@ namespace UModbus
             return order;
         }
 
-        public ModbusDataFormat DefaultFormat()
-        {
-            return IsWord() ? ModbusDataFormat.Uint16 : ModbusDataFormat.Digital;
-        }
+        public ModbusDataFormat DefaultFormat() => IsWord() ? ModbusDataFormat.Uint16 : ModbusDataFormat.Digital;
 
         public int[] DefaultByteOrder()
         {
-            int bytes = Length();
+            int   bytes = Length();
             int[] order = new int[bytes];
 
             for (int i = 0; i < bytes; i++)
@@ -180,7 +152,7 @@ namespace UModbus
 
         public bool CheckByteOrder(int[] order)
         {
-            int bytes = Length();
+            int  bytes  = Length();
             bool result = order == null ? false : order.Length == bytes;
 
             if (result)
@@ -204,7 +176,7 @@ namespace UModbus
                 return null;
             }
 
-            int bytes = Length();
+            int    bytes  = Length();
             byte[] result = new byte[bytes];
 
             for (int i = 0; i < bytes; i++)
@@ -222,7 +194,7 @@ namespace UModbus
                 return null;
             }
 
-            int bytes = Length();
+            int    bytes  = Length();
             byte[] result = new byte[bytes];
 
             for (int i = 0; i < bytes; i++)
@@ -233,10 +205,7 @@ namespace UModbus
             return result;
         }
 
-        public byte[] GetRawValue()
-        {
-            return IsWord() ? ConvertForward(_Value) : _Value;
-        }
+        public byte[] GetRawValue() => IsWord() ? ConvertForward(_Value) : _Value;
 
         public string RawToString()
         {
@@ -274,7 +243,7 @@ namespace UModbus
 
         private static bool CheckIsHex(string image, int size)
         {
-            string regex = "^0x[0-9a-f]{1," + (2 * size).ToString() + "}$";
+            string regex = "^0x[0-9a-f]{1," + (2*size).ToString() + "}$";
             return Regex.IsMatch(image, regex);
         }
 
@@ -419,16 +388,6 @@ namespace UModbus
             return true;
         }
 
-        public bool GetEnable()
-        {
-            return _Enable;
-        }
-
-        public void SetEnable(bool enable)
-        {
-            _Enable = enable;
-        }
-
         public ModbusData Clone(bool address = false, bool value = false)
         {
             ModbusData line = new ModbusData();
@@ -440,7 +399,7 @@ namespace UModbus
 
             if (address)
             {
-                line.Address = (ushort)(this.Address + 1);
+                line.Address = (ushort)(this.Address + (this.IsWord() ? this.Length()/2 : 1));
             }
 
             if (value)
@@ -464,10 +423,7 @@ namespace UModbus
             return line;
         }
 
-        public static ModbusData[] OpenDataMap(string file)
-        {
-            return JsonConvert.DeserializeObject<ModbusData[]>(File.ReadAllText(file));
-        }
+        public static ModbusData[] OpenDataMap(string file) => JsonConvert.DeserializeObject<ModbusData[]>(File.ReadAllText(file));
 
         public static void SaveDataMap(string file, ModbusData[] map)
         {
@@ -475,19 +431,19 @@ namespace UModbus
             foreach (var t in Enum.GetValues(typeof(ModbusDataType)))
             {
                 ModbusDataType type = (ModbusDataType)t;
-                legend += String.Format("\t{0:g} - {1:s}\r\n", (int)type, type.ToString());
+                legend += $"\t{(int)type:g} - {type}\r\n";
             }
             legend += "Formats:\r\n";
             foreach (var f in Enum.GetValues(typeof(ModbusDataFormat)))
             {
                 ModbusDataFormat format = (ModbusDataFormat)f;
-                legend += String.Format("\t{0:g} - {1:s}\r\n", (int)format, format.ToString());
+                legend += $"\t{(int)format:g} - {format}\r\n";
             }
             legend += "*/\r\n";
 
-            string saved = JsonConvert.SerializeObject(map);
-
-            File.WriteAllText(file, legend + saved.Insert(saved.Length - 1, "\r\n").Replace("{", "\r\n\t{"));
+            string saved = JsonConvert.SerializeObject(map, Formatting.Indented);
+			saved = saved.Replace("  ", "\t");
+			File.WriteAllText(file, legend + saved);
         }
         #endregion
     }

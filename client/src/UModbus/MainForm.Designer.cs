@@ -574,12 +574,12 @@
             // 
             this.Timeout.Location = new System.Drawing.Point(57, 19);
             this.Timeout.Maximum = new decimal(new int[] {
-            5000,
+            10000,
             0,
             0,
             0});
             this.Timeout.Minimum = new decimal(new int[] {
-            10,
+            1,
             0,
             0,
             0});
@@ -596,12 +596,7 @@
             // 
             this.ReqGap.Location = new System.Drawing.Point(57, 47);
             this.ReqGap.Maximum = new decimal(new int[] {
-            5000,
-            0,
-            0,
-            0});
-            this.ReqGap.Minimum = new decimal(new int[] {
-            10,
+            10000,
             0,
             0,
             0});
@@ -641,7 +636,7 @@
             // StatusMode
             // 
             this.StatusMode.Name = "StatusMode";
-            this.StatusMode.Size = new System.Drawing.Size(29, 17);
+            this.StatusMode.Size = new System.Drawing.Size(27, 17);
             this.StatusMode.Text = "RTU";
             // 
             // StatusSep1
@@ -745,7 +740,7 @@
             this.Controls.Add(this.LinkBox);
             this.Controls.Add(this.ModeBox);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MinimumSize = new System.Drawing.Size(681, 413);
+            this.MinimumSize = new System.Drawing.Size(704, 414);
             this.Name = "MainForm";
             this.Text = "UModbus";
             this.ModeBox.ResumeLayout(false);

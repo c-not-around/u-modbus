@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // Управление общими сведениями о сборке осуществляется с помощью 
 // набора атрибутов. Измените значения этих атрибутов, чтобы изменить сведения,
 // связанные со сборкой.
-[assembly: AssemblyTitle("UModbus")]
+[assembly: AssemblyTitle("UModbus.Client")]
 [assembly: AssemblyDescription("Universal modbus client library")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("VTEC-2")]
-[assembly: AssemblyProduct("UModbus")]
+[assembly: AssemblyProduct("UModbus.Client")]
 [assembly: AssemblyCopyright("c_not_around © 2024")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

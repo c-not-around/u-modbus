@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using System.Drawing;
 using System.Windows.Forms;
-using Modbus;
+using UModbus.Client;
 
 
 namespace UModbus
@@ -87,13 +87,13 @@ namespace UModbus
 
         private Mode GetMode()
         {
-            foreach(var mode in ModeBox.Controls)
+            foreach (var m in ModeBox.Controls)
             {
-                RadioButton _mode = mode as RadioButton;
+                RadioButton mode = m as RadioButton;
 
-                if (_mode.Checked)
+                if (mode.Checked)
                 {
-                    return (Mode)Convert.ToInt32(_mode.Tag);
+                    return (Mode)Convert.ToInt32(mode.Tag);
                 }
             }
 
@@ -154,24 +154,12 @@ namespace UModbus
             if (mode < Mode.TCP)
             {
                 ModbusSerialClient mbsc = Client as ModbusSerialClient;
-                StatusPhysical.Text     = String.Format
-                (
-                    "{0}:{1}:8{2}{3}",
-                    mbsc.Port,
-                    mbsc.Baudrate,
-                    mbsc.Parity.ToString()[0],
-                    (int)mbsc.StopBits
-                );
+				StatusPhysical.Text     = $"{mbsc.Port}:{mbsc.Baudrate}:8{mbsc.Parity.ToString()[0]}{(int)mbsc.StopBits}";
             }
             else
             {
                 ModbusIpClient mbip = Client as ModbusIpClient;
-                StatusPhysical.Text = String.Format
-                (
-                    "{0}:{1}",
-                    mbip.IpAddress,
-                    mbip.Port
-                );
+				StatusPhysical.Text = $"{mbip.IpAddress}:{mbip.Port}";
             }
 
             StatusConnection.Text = Connected ? "Connected" : "Disconnected";
@@ -179,17 +167,31 @@ namespace UModbus
 
         private void ManageSelectedRows()
         {
-            int sel = Map.Sum(row => row.GetEnable() ? 1 : 0);
+            int sel = Map.Sum(row => row.Enable ? 1 : 0);
 
-            StatusSelRows.Text = String.Format("Sel.: {0}/{1}", sel, Map.Count);
+            StatusSelRows.Text = $"Sel.: {sel}/{Map.Count}";
 
             DataViewEnableAll.Enabled  = sel < Map.Count;
             DataViewDisableAll.Enabled = sel > 0;
         }
-        #endregion
+		#endregion
 
-        #region Map<->Grid
-        private void DataMapRowUpdate(int row)
+		#region Routines
+		private void DataViewSetEnableAll(bool enable)
+		{
+			for (int row = 0; row < Map.Count; row++)
+			{
+				Map[row].Enable = enable;
+				DataGridViewCheckBoxCell EnableBox = DataMapView[ENABLE, row] as DataGridViewCheckBoxCell;
+				EnableBox.Value = enable;
+			}
+
+			ManageSelectedRows();
+		}
+		#endregion
+
+		#region Map<->Grid
+		private void DataMapRowUpdate(int row)
         {
             if (row >= DataMapView.RowCount)
             {
@@ -205,7 +207,7 @@ namespace UModbus
             DataGridViewTextBoxCell  ValueBox   = DataMapView[VALUE, row]   as DataGridViewTextBoxCell;
             DataGridViewTextBoxCell  DescBox    = DataMapView[DESC, row]    as DataGridViewTextBoxCell;
 
-            EnableBox.Value = Map[row].GetEnable();
+            EnableBox.Value = Map[row].Enable;
             TypeBox.Value   = Map[row].Type.ToString();
             FormatBox.Value = null;
             FormatBox.Items.Clear();
@@ -297,7 +299,7 @@ namespace UModbus
                 else
                 {
                     RawBox.Style.ForeColor = Color.Red;
-                    RawBox.Value = status != RequestStatus.Valid ? status.ToString() : string.Format("recorded {0}/{1}", recorded, len);
+                    RawBox.Value = status != RequestStatus.Valid ? status.ToString() : $"recorded {recorded}/{len}";
 
                     result = 1;
                 }
@@ -326,7 +328,7 @@ namespace UModbus
             { 
                 int    bytes = Map[row].Length();
                 string image = OrderBox.Value.ToString();
-                string regex = "^(\\d-){" + (bytes - 1).ToString() + "}\\d$";
+                string regex = "^(\\d-){" + (bytes-1).ToString() + "}\\d$";
 
                 if (Regex.IsMatch(image, regex))
                 {
@@ -381,13 +383,13 @@ namespace UModbus
 
             if (!Connected)
             {
-                MessageBox.Show("Cant establish connection to " + StatusPhysical.Text, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Cant establish connection to {StatusPhysical.Text}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         private void ReadTask()
         {
-            int ReadCount = Map.Sum(d => d.GetEnable() ? 1 : 0);
+            int ReadCount = Map.Sum(d => d.Enable ? 1 : 0);
 
             do
             {
@@ -397,7 +399,7 @@ namespace UModbus
 
                     for (int row = 0; row < Map.Count; row++)
                     {
-                        if (Map[row].GetEnable())
+                        if (Map[row].Enable)
                         {
                             DataMapView[RAW, row].Style.ForeColor = Color.Black;
                         }    
@@ -409,7 +411,7 @@ namespace UModbus
 
                 for (int row = 0; row < Map.Count; row++)
                 {
-                    if (Map[row].GetEnable())
+                    if (Map[row].Enable)
                     {
                         switch (Map[row].Type)
                         {
@@ -447,10 +449,13 @@ namespace UModbus
                         Invoke((MethodInvoker)delegate
                         {
                             AccessProgress.Value = Convert.ToInt32(100.0 * ReadsCount / ReadCount);
-                            StatusReqError.Text  = String.Format("Errors: {0}/{1}", ErrorCount, ReadCount);
+                            StatusReqError.Text  = $"Errors: {ErrorCount}/{ReadCount}";
                         });
 
-                        Thread.Sleep(RequestGap);
+						if (RequestGap > 0)
+						{
+							Thread.Sleep(RequestGap);
+						}
 
                         if (AccessAborting)
                         {
@@ -470,13 +475,13 @@ namespace UModbus
 
         private void WriteTask()
         {
-            int WriteCount   = Map.Sum(d => d.GetEnable() && d.IsWriteable() ? 1 : 0);
+            int WriteCount   = Map.Sum(d => d.Enable && d.IsWriteable() ? 1 : 0);
             int WrittenCount = 0;
             int ErrorCount   = 0;
 
             for (int row = 0; row < Map.Count; row++)
             {
-                if (Map[row].IsWriteable() && Map[row].GetEnable())
+                if (Map[row].IsWriteable() && Map[row].Enable)
                 {
                     if (Map[row].Type == ModbusData.ModbusDataType.Coil)
                     {
@@ -502,12 +507,15 @@ namespace UModbus
                     Invoke((MethodInvoker)delegate
                     {
                         AccessProgress.Value = Convert.ToInt32(100.0 * WrittenCount / WriteCount);
-                        StatusReqError.Text  = String.Format("Errors: {0}/{1}", ErrorCount, WriteCount);
+                        StatusReqError.Text  = $"Errors: {ErrorCount}/{WriteCount}";
                     });
 
-                    Thread.Sleep(RequestGap);
+					if (RequestGap > 0)
+					{
+						Thread.Sleep(RequestGap);
+					}
 
-                    if (AccessAborting)
+					if (AccessAborting)
                     {
                         break;
                     }
@@ -529,10 +537,7 @@ namespace UModbus
             PhysicalAddress.Text = GetMode() < Mode.TCP ? "COM1:9600:8N1" : "127.0.0.1:502";
         }
 
-        private void SlaveScanClick(object sender, EventArgs e)
-        {
-            ScanForm.Show(Client);
-        }
+        private void SlaveScanClick(object sender, EventArgs e) => ScanForm.Show(Client);
 
         private void ConnectClick(object sender, EventArgs e)
         {
@@ -565,10 +570,7 @@ namespace UModbus
             }
         }
 
-        private void ReqGapValueChanged(object sender, EventArgs e)
-        {
-            RequestGap = Convert.ToInt32(ReqGap.Value);
-        }
+        private void ReqGapValueChanged(object sender, EventArgs e) => RequestGap = Convert.ToInt32(ReqGap.Value);
 
         private void MapAddClick(object sender, EventArgs e)
         {
@@ -686,7 +688,7 @@ namespace UModbus
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Read file \"" + dialog.FileName + "\" error: " + ex.Message, "DataMap file open", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show($"Read file \"{dialog.FileName}\" error: {ex.Message}", "DataMap file open", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
@@ -709,10 +711,7 @@ namespace UModbus
             }
         }
 
-        private void CycleReadCheckedChanged(object sender, EventArgs e)
-        {
-            ContinousRead = CycleRead.Checked;
-        }
+        private void CycleReadCheckedChanged(object sender, EventArgs e) => ContinousRead = CycleRead.Checked;
 
         private void LogEnableCheckedChanged(object sender, EventArgs e)
         {
@@ -727,7 +726,7 @@ namespace UModbus
 
         private void AccessReadClick(object sender, EventArgs e)
         {
-            if (Map.Sum(row => row.GetEnable() ? 1 : 0) > 0)
+            if (Map.Sum(row => row.Enable ? 1 : 0) > 0)
             {
                 AccessInProgress = true;
                 ManageAbility();
@@ -742,7 +741,7 @@ namespace UModbus
 
         private void AccessWriteClick(object sender, EventArgs e)
         {
-            if (Map.Sum(row => row.IsWriteable() && row.GetEnable() ? 1 : 0) > 0)
+            if (Map.Sum(row => row.IsWriteable() && row.Enable ? 1 : 0) > 0)
             {
                 AccessInProgress = true;
                 ManageAbility();
@@ -750,7 +749,7 @@ namespace UModbus
                 AccessProgress.Value = 0;
                 for (int row = 0; row < Map.Count; row++)
                 {
-                    if (Map[row].IsWriteable() && Map[row].GetEnable())
+                    if (Map[row].IsWriteable() && Map[row].Enable)
                     {
                         DataMapView[RAW, row].Style.ForeColor = Color.Black;
                     }
@@ -771,10 +770,7 @@ namespace UModbus
             ContinousRead       = false;
         }
 
-        private void DoUserRequestClick(object sender, EventArgs e)
-        {
-            UserRequestForm.Show(Client);
-        }
+        private void DoUserRequestClick(object sender, EventArgs e) => UserRequestForm.Show(Client);
 
         private void DataMapViewSelected(object sender, DataGridViewCellEventArgs e)
         {
@@ -785,7 +781,7 @@ namespace UModbus
                 return; // last move step incorrect event e.g.(N=6): 0->1->2->3->4->5->4
             }
 
-            StatusCurrentRow.Text = String.Format("Row: {0}/{1}", row+1, DataMapView.Rows.Count);
+            StatusCurrentRow.Text = $"Row: {row+1}/{DataMapView.Rows.Count}";
 
             MapMoveUp.Enabled   = row > 0;
             MapMoveDown.Enabled = row < (DataMapView.Rows.Count-1);
@@ -803,7 +799,7 @@ namespace UModbus
                 {
                     DataGridViewCheckBoxCell EnableBox = DataMapView[ENABLE, row] as DataGridViewCheckBoxCell;
                     bool enable = Convert.ToBoolean(EnableBox.Value);
-                    Map[row].SetEnable(enable);
+                    Map[row].Enable = enable;
 
                     ManageSelectedRows();
                 } break;
@@ -874,52 +870,26 @@ namespace UModbus
             DataMapRowUpdate(row);
         }
         
-        private void DataViewEnableAllClick(object sender, EventArgs e)
-        {
-            for (int row = 0; row < Map.Count; row++)
-            {
-                Map[row].SetEnable(true);
-                DataGridViewCheckBoxCell EnableBox = DataMapView[ENABLE, row] as DataGridViewCheckBoxCell;
-                EnableBox.Value = true;
-            }
+        private void DataViewEnableAllClick(object sender, EventArgs e) => DataViewSetEnableAll(true);
+		
+        private void DataViewDisableAllClick(object sender, EventArgs e) => DataViewSetEnableAll(false);
 
-            ManageSelectedRows();
-        }
-
-        private void DataViewDisableAllClick(object sender, EventArgs e)
-        {
-            for (int row = 0; row < Map.Count; row++)
-            {
-                Map[row].SetEnable(false);
-                DataGridViewCheckBoxCell EnableBox = DataMapView[ENABLE, row] as DataGridViewCheckBoxCell;
-                EnableBox.Value = false;
-            }
-
-            ManageSelectedRows();
-        }
-
-        private void DataViewSaveClick(object sender, EventArgs e)
+		private void DataViewSaveClick(object sender, EventArgs e)
         {
             SaveFileDialog dialog = new SaveFileDialog();
             dialog.Filter = "Comma-separated file (*.csv)|*.csv";
 
             if (dialog.ShowDialog() == DialogResult.OK)
             {
-                var writer = File.AppendText(dialog.FileName);
+				using (var writer = File.AppendText(dialog.FileName))
+				{
+					for (int row = 0; row < Map.Count; row++)
+					{
+						writer.WriteLine($"{Map[row].Type};{Map[row].Format};{Map[row].Address:X4};{Map[row].ValueToString()}\r\n");
+					}
 
-                for (int row = 0; row < Map.Count; row++)
-                {
-                    string line = Map[row].Type.ToString() + ";" +
-                                  Map[row].Format.ToString() + ";" +
-                                  Map[row].Address.ToString("X4") + ";" +
-                                  Map[row].ValueToString();
-
-                    writer.WriteLine(line);
-                }
-
-                writer.Close();
-                writer.Dispose();
-                writer = null;
+					writer.Dispose();
+				}
             }
         }
         #endregion

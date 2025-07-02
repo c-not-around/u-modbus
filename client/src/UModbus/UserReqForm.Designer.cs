@@ -58,6 +58,9 @@
             // 
             // Request
             // 
+            this.Request.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.Request.BackColor = System.Drawing.Color.White;
             this.Request.Location = new System.Drawing.Point(6, 7);
             this.Request.Name = "Request";
             this.Request.Size = new System.Drawing.Size(355, 18);

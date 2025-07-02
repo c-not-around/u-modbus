@@ -1,9 +1,9 @@
-﻿{$reference UModbus.dll}
+﻿{$reference ..\bin\x86_x64\UModbus.Client.dll}
 
 
 uses
   System,
-  UModbus;
+  UModbus.Client;
 
 
 begin
