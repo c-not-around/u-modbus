@@ -310,7 +310,7 @@ namespace UModbus
                         return false;
                     }
 
-                        _Value = ConvertBackward(BitConverter.GetBytes(value));
+                    _Value = ConvertBackward(BitConverter.GetBytes(value));
                 } break;
                 case ModbusDataFormat.Int32:
                 {
